@@ -19,6 +19,9 @@ namespace docspeak
 
         virtual void print() = 0;
         virtual std::string to_string() = 0;
+
+        inline void set_printer(std::shared_ptr<Printer> printer) {m_printer = printer;}
+        inline void set_transcripter(std::shared_ptr<Transcripter> transcripter) {m_transcripter = transcripter;}
     };
     
 } // namespace docspeak

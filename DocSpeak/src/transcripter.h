@@ -1,10 +1,11 @@
 #ifndef TRANSCRIPTER_H
 #define TRANSCRIPTER_H
 
-#include <deepspeech.h>
+#include <DeepSpeech/deepspeech.h>
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace docspeak {
     class Transcripter
