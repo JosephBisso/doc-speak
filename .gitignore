@@ -9,6 +9,7 @@
 
 # Generated Files
 *.g.*
+**\build\**
 
 # Precompiled Headers
 *.gch
