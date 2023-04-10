@@ -63,32 +63,5 @@ namespace docspeak {
 
     };
 
-    class PersonBook: public Serializable
-    {
-    private:        
-        PersonBook() = default;
-        ~PersonBook();
-
-        std::vector<std::shared_ptr<Person>> m_persons;
-
-        static PersonBook* s_instance;
-    public:
-
-        void save(const std::filesystem::path&) override;
-        void load(const std::filesystem::path&) override;
-
-        inline PersonBook* get_instance() const {return s_instance;}
-
-        static PersonBook* getPersonBook();
-
-        void addPerson(std::shared_ptr<Person> person);
-
-        inline std::vector<std::shared_ptr<Person>> getPersons() {return m_persons;}
-        // std::vector<std::shared_ptr<Person>> getPersons(const Person& filterPerson);
-        inline void clearPersons() {m_persons.clear();}
-        inline size_t size() {return m_persons.size();}
-    };
-    
-    
 }
 #endif

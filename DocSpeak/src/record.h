@@ -13,7 +13,7 @@ namespace docspeak {
     class Prescription;
     class Summary;
 
-    class Record: public Serializable
+    class Record
     {
     private:
         std::shared_ptr<Doctor> m_doctor;
@@ -23,9 +23,6 @@ namespace docspeak {
     public:
         explicit Record(std::time_t timestamp);
         ~Record();
-
-        void save(const std::filesystem::path& path) override;
-        void load(const std::filesystem::path& path) override;
 
         inline void set_doctor (std::shared_ptr<Doctor> doctor) {m_doctor = doctor;}
         inline std::shared_ptr<Doctor> get_doctor () {return m_doctor;}
@@ -40,6 +37,7 @@ namespace docspeak {
 
     };
 
+    typedef Book<Record> RecordBook;
 }
 
 

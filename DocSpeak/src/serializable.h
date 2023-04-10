@@ -37,6 +37,36 @@ namespace docspeak {
 
     static std::map<unsigned int, Serializable*> s_serializables;
 
+    template<typename T>
+    class Book: public Serializable
+    {
+    private:        
+
+        std::vector<std::shared_ptr<T>> m_elements;
+
+        static std::shared_ptr<Book<T>> s_instance;
+    public:
+        Book(){};
+        ~Book() {};
+
+        void save(const std::filesystem::path&) override;
+        void load(const std::filesystem::path&) override;
+
+        static std::weak_ptr<Book<T>> get_instance() {return s_instance;}
+
+        static std::weak_ptr<Book<T>> get_book();
+        static void init_book();
+        static void clear_book();
+
+        void add(std::shared_ptr<T> element);
+
+        static std::vector<std::shared_ptr<T>>& get_all();
+        // std::vector<std::shared_ptr<T>> getPersons(const T& filterPerson);
+        static void clear();
+        static size_t size();
+    };
+
 }
 
+#include "serializable.impl"
 #endif

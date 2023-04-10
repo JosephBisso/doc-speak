@@ -36,7 +36,8 @@ namespace docspeak {
         inline std::string get_insurance_number() const {return m_insurance_number;}
 
         inline void add_record(std::shared_ptr<Record> record) {m_records.push_back(record);}
-        inline Records get_records() const {return m_records;}
+        inline Records& get_records() {return m_records;}
+        inline size_t get_records_size() {return m_records.size();}
     };
 
 }

@@ -25,3 +25,6 @@ void Serializable::save_all(const std::filesystem::path& path) {
     );
 }
 
+
+
+

@@ -1,0 +1,75 @@
+using namespace docspeak;
+
+template<typename T>
+std::shared_ptr<Book<T>> Book<T>::s_instance;
+
+template<typename T>
+std::weak_ptr<Book<T>> Book<T>::get_book() {
+    if (!s_instance) 
+        s_instance = std::shared_ptr<Book>(new Book<T>);
+    
+    return s_instance;
+}
+
+template<typename T>
+void Book<T>::init_book() {
+    if (!s_instance) 
+        s_instance = std::shared_ptr<Book>(new Book<T>);
+}
+
+template<typename T>
+void Book<T>::clear_book() {
+    if (!s_instance) 
+        return;
+    
+    s_instance->clear();
+}
+
+template<typename T>
+void Book<T>::clear() {
+    if (!s_instance) 
+        return;
+    
+    s_instance->m_elements.clear();
+}
+
+template<typename T>
+size_t Book<T>::size() {
+    if (!s_instance) 
+        return 0;
+    
+    return s_instance->m_elements.size();
+}
+
+template<typename T>
+std::vector<std::shared_ptr<T>>& Book<T>::get_all() {
+    if (!s_instance) 
+        init_book();
+    
+    return s_instance->m_elements;
+}
+
+// template<typename T>
+// void Book<T>::add(std::shared_ptr<T> element) {
+//     m_elements.push_back(element);
+// }
+
+template<typename T>
+void Book<T>::save(const std::filesystem::path&){
+    
+}
+
+template<typename T>
+void Book<T>::load(const std::filesystem::path&){
+
+}
+
+// std::vector<std::shared_ptr<T>> Book<T>::getPersons(const Person& filterPerson) {
+//     auto filtered =  m_elements | std::views::filter([&filterPerson](std::shared_ptr<Person> element){ 
+//             return element -> get_first_name() == filterPerson.get_first_name() ||
+//                     element -> get_last_name() == filterPerson.get_last_name() ||
+//                     element -> get_sex() == filterPerson.get_sex() ||
+//                     element -> get_type() == filterPerson.get_type();
+//             });
+    
+// }
