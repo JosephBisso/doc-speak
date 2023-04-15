@@ -14,15 +14,6 @@ Person::Person(Type type, const std::string& first_name,const std::string& last_
         throw std::invalid_argument (msg.c_str()) ;
     }
 
-    auto book = Book<Person>::get_book();
-
-    if (auto book_observer = book.lock()){
-        book_observer -> add(std::shared_ptr<Person>(this));
-    } else {
-        auto msg = std::format("The book cannot be accessed");
-        throw std::invalid_argument(msg);
-    }
-
 }
 
 Person::~Person()
@@ -38,5 +29,5 @@ void Book<Person>::add(std::shared_ptr<Person> element) {
         }
     }
 
-    m_elements.push_back(element);
+    m_elements.push_back(std::move(element));
 }

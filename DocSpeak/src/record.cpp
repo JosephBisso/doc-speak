@@ -4,14 +4,7 @@ using namespace docspeak;
 
 Record::Record(std::time_t timestamp) : m_timestamp(timestamp)
 {
-    auto book = Book<Record>::get_book();
-
-    if (auto book_observer = book.lock()){
-        book_observer -> add(std::shared_ptr<Record>(this));
-    } else {
-        auto msg = std::format("The book cannot be accessed");
-        throw std::invalid_argument(msg);
-    }
+    
 }
 
 Record::~Record()
@@ -27,6 +20,6 @@ void Book<Record>::add(std::shared_ptr<Record> element) {
         }
     }
 
-    m_elements.push_back(element);
+    m_elements.push_back(std::move(element));
 }
 

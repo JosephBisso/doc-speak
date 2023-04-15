@@ -16,7 +16,7 @@ namespace docspeak {
     class Record
     {
     private:
-        std::shared_ptr<Doctor> m_doctor;
+        std::weak_ptr<Doctor> m_doctor;
         std::shared_ptr<Prescription> m_prescription;
         std::shared_ptr<Summary> m_summary;
         std::time_t m_timestamp;
@@ -24,8 +24,8 @@ namespace docspeak {
         explicit Record(std::time_t timestamp);
         ~Record();
 
-        inline void set_doctor (std::shared_ptr<Doctor> doctor) {m_doctor = doctor;}
-        inline std::shared_ptr<Doctor> get_doctor () {return m_doctor;}
+        inline void set_doctor (std::shared_ptr<Doctor> doctor) {m_doctor = std::weak_ptr(doctor);}
+        inline std::weak_ptr<Doctor> get_doctor () {return m_doctor;}
 
         inline void set_prescription (std::shared_ptr<Prescription> prescription) {m_prescription = prescription;}
         inline std::shared_ptr<Prescription> get_prescription () {return m_prescription;}
@@ -38,6 +38,7 @@ namespace docspeak {
     };
 
     typedef Book<Record> RecordBook;
+
 }
 
 
