@@ -32,10 +32,7 @@ namespace docspeak {
         virtual void save(const std::filesystem::path& path) = 0;
         virtual void load(const std::filesystem::path& path) = 0;
 
-        static void save_all(const std::filesystem::path& path);
     };
-
-    static std::map<unsigned int, Serializable*> s_serializables;
 
     template<typename T>
     class Book: public Serializable

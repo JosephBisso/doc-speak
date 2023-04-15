@@ -14,4 +14,7 @@ TEST(PersonBookTest, Add_Doctor) {
   EXPECT_EQ(Book<Doctor>::size(), 1); 
   EXPECT_EQ(Book<Patient>::size(), 1); 
 
+  DoctorBook::clear_book();
+  PatientBook::clear_book();
+
 }

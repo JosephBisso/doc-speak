@@ -17,7 +17,7 @@ if ($args) {
     cmake --build build --target unit_tests
     
     $repo = "$PWD"
-    if ($LASTEXITCODE -eq 0) {
+    if ($LASTEXITCODE -eq 0 -and '--build-only' -notin $args) {
         Write-Host "`n> Running..." -ForegroundColor Cyan
        pushd build/bin && ctest --test-dir "$repo\build\DocSpeak\tests"
        popd
