@@ -1,0 +1,53 @@
+# Define the name of the workflow
+name: Unit Tests
+
+# Trigger the workflow on push events
+on: push
+
+# Define the jobs
+jobs:
+  # Clone and build the repository with CMake
+  build:
+    # Use a Windows Docker container
+    runs-on: windows-latest
+    container: mcr.microsoft.com/windows/servercore:ltsc2019
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Build the tests
+        shell: pwsh
+        run: |
+          .\build.ps1 --build-only
+      # Upload the build artifacts for the next job
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: |
+            .\build\bin\
+            .\build\DocSpeak\tests
+
+  # Run some unit tests
+  test:
+    # Use a Windows Docker container
+    runs-on: windows-latest
+    container: mcr.microsoft.com/windows/servercore:ltsc2019
+    # Only run this job if the previous one succeeded
+    needs: build
+    steps:
+      # Download the build artifacts from the previous job
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+      - name: Run the Tests
+        run: |
+          cd build/bin
+          ctest --test-dir "..\DocSpeak\tests" --output-on-failure
+      - name: Upload Test Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: test
+          path: |
+            .\build\bin\
+            .\build\DocSpeak\tests
