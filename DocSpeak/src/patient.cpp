@@ -22,8 +22,12 @@ std::shared_ptr<Patient> docspeak::PATIENT(const std::string& first_name, const 
     }
 }
 
-std::shared_ptr<Record> docspeak::RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient) {
+std::shared_ptr<Record> docspeak::RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor) {
     std::shared_ptr<Record> record (new Record(timestamp));
+
+    if (doctor)
+        record -> set_doctor(doctor);
+
     patient -> add_record(record);
     
     auto book = Book<Record>::get_book();
@@ -65,4 +69,24 @@ void Book<Patient>::add(std::shared_ptr<Patient> element) {
     }
 
     m_elements.push_back(std::move(element));
+}
+
+bool Patient::is_like(const Patient& patient) {
+    if (Person::is_like(patient))
+        return true;
+
+    return (!patient.m_insurance_number.empty() && m_insurance_number == patient.m_insurance_number) ||
+            (!patient.m_health_insurance.name.empty() && m_health_insurance.name == patient.m_health_insurance.name);
+}
+
+void Patient::add_record(std::shared_ptr<Record> record) {
+    for (auto r : m_records) {
+        if (r.lock() -> get_timestamp() == record -> get_timestamp()) {
+            auto msg = std::format("Record already added. Timestamp {}", record -> get_timestamp());
+            throw std::invalid_argument (msg.c_str()) ;
+        }
+    }
+
+    m_records.push_back(std::weak_ptr(record));
+
 }

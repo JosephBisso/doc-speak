@@ -25,7 +25,7 @@ namespace docspeak {
         ~Record();
 
         inline void set_doctor (std::shared_ptr<Doctor> doctor) {m_doctor = std::weak_ptr(doctor);}
-        inline std::weak_ptr<Doctor> get_doctor () {return m_doctor;}
+        inline std::weak_ptr<Doctor> get_doctor () const {return m_doctor;}
 
         inline void set_prescription (std::shared_ptr<Prescription> prescription) {m_prescription = prescription;}
         inline std::shared_ptr<Prescription> get_prescription () {return m_prescription;}
@@ -33,7 +33,9 @@ namespace docspeak {
         inline void set_summary (std::shared_ptr<Summary> summary) {m_summary = summary;}
         inline std::shared_ptr<Summary> get_summary () {return m_summary;}
 
-        inline std::time_t get_timestamp() {return m_timestamp;}
+        inline std::time_t get_timestamp() const {return m_timestamp;}
+
+        bool is_like (const Record& record);
 
     };
 
@@ -41,5 +43,9 @@ namespace docspeak {
 
 }
 
+inline bool operator==(const Record& lhs, const Record& rhs) {
+    return *lhs.get_doctor().lock() == *rhs.get_doctor().lock() &&
+            lhs.get_timestamp() == rhs.get_timestamp();
+}
 
 #endif

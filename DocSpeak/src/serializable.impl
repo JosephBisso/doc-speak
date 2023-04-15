@@ -64,12 +64,15 @@ void Book<T>::load(const std::filesystem::path&){
 
 }
 
-// std::vector<std::shared_ptr<T>> Book<T>::getPersons(const Person& filterPerson) {
-//     auto filtered =  m_elements | std::views::filter([&filterPerson](std::shared_ptr<Person> element){ 
-//             return element -> get_first_name() == filterPerson.get_first_name() ||
-//                     element -> get_last_name() == filterPerson.get_last_name() ||
-//                     element -> get_sex() == filterPerson.get_sex() ||
-//                     element -> get_type() == filterPerson.get_type();
-//             });
-    
-// }
+template<typename T>
+std::vector<std::weak_ptr<T>> Book<T>::find(const T& to_find) {
+    std::vector<std::weak_ptr<T>> results;
+    auto all_elements = get_all();
+
+    std::copy_if(all_elements.begin(), all_elements.end(),
+                std::back_inserter(results), [&to_find] (auto element){ 
+            return element -> is_like(to_find);
+    });
+
+    return results;
+}

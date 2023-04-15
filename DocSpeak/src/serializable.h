@@ -58,12 +58,13 @@ namespace docspeak {
         void add(std::shared_ptr<T> element);
 
         static std::vector<std::shared_ptr<T>>& get_all();
-        // std::vector<std::shared_ptr<T>> getPersons(const T& filterPerson);
+        static std::vector<std::weak_ptr<T>> find(const T& to_find);
         static void clear();
         static size_t size();
     };
-
+    
 }
+
 
 #include "serializable.impl"
 #endif

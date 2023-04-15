@@ -31,6 +31,8 @@ namespace docspeak {
         virtual void _save() = 0;
         virtual void _load() = 0;
 
+        bool is_like(const Person& person);
+
         inline Type get_type() const {return m_type;}
         inline std::string get_type_string() const {return m_type == Person::DOCTOR ? "Doctor" : "Patient";}
 
@@ -64,4 +66,16 @@ namespace docspeak {
     };
 
 }
+
+inline bool operator==(const Person& lhs, const Person& rhs) {
+    return lhs.get_first_name() == rhs.get_first_name() &&
+            lhs.get_last_name() == rhs.get_last_name() &&
+            lhs.get_phone_number() == rhs.get_phone_number() &&
+            lhs.get_email() == rhs.get_email() &&
+            lhs.get_birth_date() == rhs.get_birth_date() &&
+            lhs.get_sex() == rhs.get_sex() &&
+            lhs.get_occupation() == rhs.get_occupation() &&
+            lhs.get_type() == rhs.get_type();  
+}
+
 #endif
