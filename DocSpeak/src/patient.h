@@ -21,13 +21,14 @@ namespace docspeak {
     private:
         Insurance m_health_insurance;
         std::string m_insurance_number;
+        std::string status;
         Records m_records;
     private:
         void _save() override;
         void _load() override;
 
     public:
-        explicit Patient(const std::string& first_name, const std::string& last_name, char sex, const Insurance& health_insurance, const std::string& insurance_number);
+        explicit Patient(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number);
         ~Patient();
 
         inline void set_health_insurance(const Insurance& health_insurance) {m_health_insurance = health_insurance;}
@@ -40,11 +41,13 @@ namespace docspeak {
         inline Records& get_records() {return m_records;}
         inline size_t get_records_size() {return m_records.size();}
 
-        bool is_like(const Patient& patient);
+        bool is_like(const Patient& patient) const;
+
     };
 
-    typedef Book<Patient> PatientBook;
-    std::shared_ptr<Patient> PATIENT(const std::string& first_name, const std::string& last_name, char sex, const Insurance& health_insurance, const std::string& insurance_number);
+    typedef Book<Patient, Person> PatientBook;
+
+    std::shared_ptr<Patient> PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number);
     std::shared_ptr<Record> RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor = nullptr);
 
 }

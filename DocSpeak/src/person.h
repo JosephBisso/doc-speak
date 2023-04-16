@@ -6,7 +6,7 @@
 namespace docspeak {
     typedef std::map<std::string, std::string> AdditionalInfos;
 
-    class Person 
+    class Person: public Item<Person>
     {
     public:
         enum Type {DOCTOR, PATIENT};
@@ -16,7 +16,7 @@ namespace docspeak {
         std::string m_phone_number;
         std::string m_email;
         std::chrono::year_month_day m_birth_date;
-        char m_sex;
+        std::string m_sex;
         std::string m_occupation;
         std::vector<std::string> m_allergies;
         AdditionalInfos m_additional_info;
@@ -25,13 +25,14 @@ namespace docspeak {
     
 
     public:
-        explicit Person(Type type, const std::string& first_name, const std::string& last_name, char sex);
+        explicit Person(Type type, const std::string& first_name, const std::string& last_name, const std::string& sex);
         ~Person();
 
         virtual void _save() = 0;
         virtual void _load() = 0;
 
-        bool is_like(const Person& person);
+        virtual bool is_like(const Person& person) const override;
+        virtual bool equals(const Person& person) const override;
 
         inline Type get_type() const {return m_type;}
         inline std::string get_type_string() const {return m_type == Person::DOCTOR ? "Doctor" : "Patient";}
@@ -51,8 +52,8 @@ namespace docspeak {
         inline void set_birth_date(const std::chrono::year_month_day& birth_date) {m_birth_date = birth_date;}
         inline const std::chrono::year_month_day& get_birth_date() const {return m_birth_date;}
 
-        inline void set_sex(char sex) {m_sex = sex;}
-        inline char get_sex() const {return m_sex;}
+        inline void set_sex(const std::string& sex) {m_sex = sex;}
+        inline std::string get_sex() const {return m_sex;}
 
         inline void set_occupation(const std::string& occupation) {m_occupation = occupation;}
         inline std::string get_occupation() const {return m_occupation;}
@@ -65,17 +66,12 @@ namespace docspeak {
 
     };
 
+    typedef Book<Person> PersonBook;
+
 }
 
-inline bool operator==(const Person& lhs, const Person& rhs) {
-    return lhs.get_first_name() == rhs.get_first_name() &&
-            lhs.get_last_name() == rhs.get_last_name() &&
-            lhs.get_phone_number() == rhs.get_phone_number() &&
-            lhs.get_email() == rhs.get_email() &&
-            lhs.get_birth_date() == rhs.get_birth_date() &&
-            lhs.get_sex() == rhs.get_sex() &&
-            lhs.get_occupation() == rhs.get_occupation() &&
-            lhs.get_type() == rhs.get_type();  
+inline bool operator==(const docspeak::Person& lhs, const docspeak::Person& rhs) {
+    return lhs.equals(rhs);
 }
 
 #endif
