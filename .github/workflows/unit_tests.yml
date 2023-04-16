@@ -16,8 +16,9 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build the tests
+        shell: pwsh
         run: |
-          pwsh .\build.ps1 --build-only
+          .\build.ps1 --build-only
       # Upload the build artifacts for the next job
       - name: Upload Build Bin Artifact
         uses: actions/upload-artifact@v2
@@ -52,10 +53,3 @@ jobs:
         run: |
           cd build/bin
           ctest --test-dir "..\DocSpeak\tests" --output-on-failure
-      - name: Upload Test Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: test
-          path: |
-            .\build\bin\
-            .\build\DocSpeak\tests
