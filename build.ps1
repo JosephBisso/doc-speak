@@ -6,6 +6,12 @@ if ($args) {
                 rmdir -Recurse -Force build 
             }
         }
+        "--build-only" { 
+            Write-Host "> Build the Tests only" -ForegroundColor Cyan
+            if (Test-Path build) {
+                rmdir -Recurse -Force build 
+            }
+        }
         Default {
             Write-Host "! Unknown argument: $args" -ForegroundColor Yellow
         }
