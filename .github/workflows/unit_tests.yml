@@ -39,6 +39,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: build
+          path: |
+            .\build\bin\
+            .\build\DocSpeak\tests
       - name: Run the Tests
         run: |
           cd build/bin
