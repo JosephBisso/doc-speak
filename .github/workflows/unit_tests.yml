@@ -8,46 +8,48 @@ on: push
 jobs:
   # Clone and build the repository with CMake
   build:
-    # Use a Windows Docker container
+    # Use a Windows VM
     runs-on: windows-latest
-    container: mcr.microsoft.com/windows/servercore:ltsc2019
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
       - name: Build the tests
         shell: pwsh
         run: |
           .\build.ps1 --build-only
       # Upload the build artifacts for the next job
-      - name: Upload Build Artifacts
+      - name: Upload Build Bin Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: build
-          path: |
-            .\build\bin\
-            .\build\DocSpeak\tests
+          name: build_bin
+          path: .\build\bin\
+      - name: Upload CTest Cmake configuration Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ctest_config
+          path: .\build\DocSpeak\tests
 
   # Run some unit tests
   test:
-    # Use a Windows Docker container
+    # Use a Windows VM
     runs-on: windows-latest
-    container: mcr.microsoft.com/windows/servercore:ltsc2019
     # Only run this job if the previous one succeeded
     needs: build
     steps:
       # Download the build artifacts from the previous job
-      - name: Download artifacts
+      - name: Download Build Bin artifacts
         uses: actions/download-artifact@v2
         with:
-          name: build
+          name: build_bin
+          path: .\build\bin\
+      - name: Download Ctest Config artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ctest_config
+          path: .\build\DocSpeak\tests
       - name: Run the Tests
         run: |
           cd build/bin
           ctest --test-dir "..\DocSpeak\tests" --output-on-failure
-      - name: Upload Test Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: test
-          path: |
-            .\build\bin\
-            .\build\DocSpeak\tests
