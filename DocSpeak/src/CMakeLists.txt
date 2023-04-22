@@ -9,15 +9,20 @@ target_include_directories(
     ${LIB_PATH}
 )
 
+include(FetchContent)
+
+FetchContent_Declare(
+  PDFHummus
+  GIT_REPOSITORY https://github.com/galkahana/PDF-Writer.git
+  GIT_TAG        v4.5.6
+  FIND_PACKAGE_ARGS
+)
+FetchContent_MakeAvailable(PDFHummus)
+
+
 target_link_libraries(
     doc_speak 
     PUBLIC 
     ${LIB_PATH}/DeepSpeech/libdeepspeech.so.if.lib
-    ${LIB_PATH}/PDF-Writer/lib/FreeType.lib
-    ${LIB_PATH}/PDF-Writer/lib/LibAesgm.lib
-    ${LIB_PATH}/PDF-Writer/lib/LibJpeg.lib
-    ${LIB_PATH}/PDF-Writer/lib/LibPng.lib
-    ${LIB_PATH}/PDF-Writer/lib/LibTiff.lib
-    ${LIB_PATH}/PDF-Writer/lib/PDFWriter.lib
-    ${LIB_PATH}/PDF-Writer/lib/Zlib.lib
+    PDFHummus::PDFWriter
 )
