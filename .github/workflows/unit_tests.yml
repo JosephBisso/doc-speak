@@ -1,5 +1,5 @@
 # Define the name of the workflow
-name: Unit Tests
+name: DocSpeak lib Tests
 
 # Trigger the workflow on push events
 on: push
@@ -25,14 +25,14 @@ jobs:
         with:
           name: build_bin
           path: .\build\bin\
-      - name: Upload CTest Cmake configuration Artifacts
+      - name: Upload Test Assets Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ctest_config
+          name: test_assets
           path: .\build\DocSpeak\tests
 
   # Run some unit tests
-  test:
+  unit-test:
     # Use a Windows VM
     runs-on: windows-latest
     # Only run this job if the previous one succeeded
@@ -44,12 +44,17 @@ jobs:
         with:
           name: build_bin
           path: .\build\bin\
-      - name: Download Ctest Config artifacts
+      - name: Download Test Assets artifacts
         uses: actions/download-artifact@v2
         with:
-          name: ctest_config
+          name: test_assets
           path: .\build\DocSpeak\tests
       - name: Run the Tests
         run: |
           cd build/bin
-          ctest --test-dir "..\DocSpeak\tests" --output-on-failure
+          . .\unit_tests.exe --gtest_output=xml
+      - name: Upload Test Details
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_details
+          path: .\build\bin\test_detail.xml

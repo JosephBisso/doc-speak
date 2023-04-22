@@ -39,7 +39,7 @@ class PrinterTest : public ::testing::Test {
   std::filesystem::path assets_path = std::filesystem::current_path() /= "..\\DocSpeak\\tests\\assets\\";
 };
 
-TEST_F(PrinterTest, OpenPDFFile) {
+TEST_F(PrinterTest, CreateTestPDF) {
 
     auto input_path = assets_path / "blank.pdf";
     auto input_path_set = printer -> set_input_path(input_path);

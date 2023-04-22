@@ -164,7 +164,7 @@ Printer::StatusInfo Printer::test() {
     opt_img.boundingBoxHeight = 200;
     contentContext->DrawImage(x_left,y_top - 3 * empty_line - line_break -  200,(m_assets_folder_path/"logo.jfif").string(), opt_img);
 
-    contentContext->WriteText(x_mid + padding ,y_top - 6 * empty_line ,"4. Sign Block Size",opt_18);
+    contentContext->WriteText(x_mid + padding ,y_top - 6 * empty_line ,"4. Sign Block",opt_18);
     contentContext->WriteText(x_mid + padding , y_top - 6 * empty_line - line_break, "Signs follow:" ,opt_12);
     contentContext->WriteText(x_mid + padding , y_top - 6 * empty_line - 2 * line_break, "✗ ✓ ▢" ,opt_12);
 
