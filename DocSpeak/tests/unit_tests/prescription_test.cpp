@@ -29,8 +29,38 @@ protected:
 
         patient1 = PATIENT("Patient1", "BisBi1", "f", insurance1, "52345");
 
-        Prescription::s_template_pdf_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\blank.pdf";
+        Prescription::s_template_pdf_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\prescription.pdf";
+        Prescription::s_assets_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\";
         Prescription::s_font_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\arial.ttf";
+
+        auto width = 400, heigth = 280;
+        Prescription::s_templates["template1"] = {
+            {"cost_bearer", new Printer::Text(width/16 + 10, heigth - 15, "cost_bearer", 8)},
+            {"patient_name", new Printer::Text(width/16 + 10, heigth - 60, "patient_name", 8)},
+            {"insurance_number", new Printer::Text(width/16 + 10, heigth - 100, "insurance_number", 8)},
+            {"patient_number", new Printer::Text(width/16 + 10 + 75, heigth - 100, "patient_number", 8)},
+            {"doctor_number", new Printer::Text(width/16 + 10 + 75, heigth - 125, "doctor_number", 8)},
+            {"date", new Printer::Text(width/16 + 10 + 170, heigth - 125, "date", 8)},
+            {"medication_1", new Printer::Text(width/16 + 10, heigth/2 - 22, "medication_1", 8)},
+            {"medication_2", new Printer::Text(width/16 + 10, heigth/2 - 45, "medication_2", 8)},
+            {"medication_3", new Printer::Text(width/16 + 10, heigth/2 - 80, "medication_3", 8)},
+            {"med_auf_idem_1", new Printer::Text(10, heigth/2 - 22, "X", 10)},
+            {"med_auf_idem_2", new Printer::Text(10, heigth/2 - 45, "X", 10)},
+            {"med_auf_idem_3", new Printer::Text(10, heigth/2 - 70, "X", 10)},
+            {"charge_type_free", new Printer::Text(10,  heigth - 20, "X", 10)},
+            {"charge_type_apply", new Printer::Text(10, heigth - 35, "X", 10)},
+            {"charge_type_nigth", new Printer::Text(10, heigth - 55, "X", 10)},
+            {"charge_type_others", new Printer::Text(10,heigth - 80, "X", 10)},
+            {"accident", new Printer::Text(10, heigth - 105  , "X", 10)},
+            {"accident_work", new Printer::Text(10, heigth - 130, "X", 10)},
+            {"accident_employer", new Printer::Text(10 + 100, 50, "accident_employer", 8)},
+            {"accident_date", new Printer::Text(10, 50, "accident_date", 8)},
+            {"stamp", new Printer::Image((3/4) * width, (1/2)*heigth, "path", 50, 50)},
+            {"doctor_signature", new Printer::Image(-1,0, "path", 200, 100)}
+
+        };
+
+        Prescription::s_current_template_name = "template1";
     }
 
     void TearDown() override {

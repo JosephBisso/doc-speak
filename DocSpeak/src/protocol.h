@@ -19,6 +19,7 @@ namespace docspeak
 
     public:
         static std::filesystem::path s_template_pdf_path;
+        static std::filesystem::path s_assets_path;
         static std::string s_current_template_name;
         static std::filesystem::path s_font_path;
 
@@ -86,6 +87,9 @@ namespace docspeak
 
     template<typename T> 
     std::filesystem::path Protocol<T>::s_template_pdf_path;
+
+    template<typename T> 
+    std::filesystem::path Protocol<T>::s_assets_path;
 
     template<typename T> 
     std::filesystem::path Protocol<T>::s_font_path;
