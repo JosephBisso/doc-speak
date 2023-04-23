@@ -2,11 +2,11 @@
 
 using namespace docspeak;
 
-Printer::Printer()
+Printer::Printer(): m_print_job(new PrintJob)
 {
 }
 
-Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path)
+Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path): Printer()
 {   
     auto success = false;
     success |= set_input_path(input_path).success;
@@ -18,10 +18,6 @@ Printer::Printer(const std::filesystem::path& input_path, const std::filesystem:
 
 Printer::~Printer()
 {
-}
-
-void Printer::print() {
-
 }
 
 Printer::StatusInfo Printer::__check_path(const std::filesystem::path& path, bool strict) {
@@ -49,7 +45,8 @@ Printer::StatusInfo Printer::__check_path(const std::filesystem::path& path, boo
 bool Printer::__check_if_ready() {
     m_printer_ready =  
         (!m_input_path.empty()) &&
-        (!m_font_path.empty());
+        (!m_font_path.empty()) &&
+        (!m_output_path.empty());
 
     return m_printer_ready;
 }
@@ -107,6 +104,62 @@ Printer::StatusInfo Printer::set_output_path(const std::filesystem::path& path) 
     __check_if_ready();
     return StatusInfo(true);
 } 
+
+Printer::StatusInfo Printer::print(const PrintJob& print_job) {
+    if (!__check_if_ready()) {
+        auto msg = std::string("Cannot print because printer is not ready. Specify all Paths first..");
+        return StatusInfo(false, msg);
+    }
+
+    auto start = std::chrono::system_clock::now();
+    bool success;
+    std::string msg;
+
+    PDFWriter pdfWriter;
+
+    pdfWriter.ModifyPDF(
+        m_input_path.string(),
+        ePDFVersion13,
+        m_output_path.string()
+    );
+
+    PDFModifiedPage modifiedPage(&pdfWriter,0);
+    AbstractContentContext* contentContext = modifiedPage.StartContentContext();
+
+    Printer::Printable::font = pdfWriter.GetFontForFile(m_font_path.string());
+
+    try
+    {
+        for (auto i = 0; i < print_job.size(); i++) {
+            print_job[i] -> print(contentContext);
+        }
+        success = true;
+    }
+    catch(const std::exception& exc)
+    {
+        success = false;
+        msg = std::format("Error while printing test file. Exception: {}", exc.what());
+
+    }
+    
+    modifiedPage.EndContentContext();
+    modifiedPage.WritePage();
+
+    success &= ( pdfWriter.EndPDF() == PDFHummus::eSuccess);
+
+    clear_print_job();
+
+    return StatusInfo(success, msg);
+
+}
+
+void Printer::clear_print_job() {
+    for (auto i = 0; i < m_print_job->size(); i++) {
+        delete m_print_job->at(i);
+        m_print_job->at(i) = nullptr;
+    }
+    m_print_job -> clear();
+}
 
 Printer::StatusInfo Printer::test() {
     if (!check_all()) {
@@ -199,4 +252,36 @@ Printer::StatusInfo Printer::test() {
     }
 
     return StatusInfo(result == PDFHummus::eSuccess, msg);
+}
+
+PDFUsedFont* Printer::Printable::font;
+
+void Printer::Text::print(AbstractContentContext* context) const {
+    if (!Printable::font) {
+        auto msg = std::format("Cannot print text because no font has been set. Text: {}", this->text);
+        throw std::invalid_argument(msg);
+    }
+
+    AbstractContentContext::TextOptions text_option(Printable::font, this->font_size ,AbstractContentContext::eRGB, this->color);
+
+    auto x_adjust = 0.0;
+    if (this->adjust_to_middle) {
+        auto textDimensions = Printable::font->CalculateTextDimensions(this->text,this->font_size);
+        x_adjust = (textDimensions.width / 2);
+    }
+    
+    context -> WriteText(this->x - x_adjust, this->y, this->text, text_option);
+}
+
+void Printer::Image::print(AbstractContentContext* context) const {
+    if (this->src_path.empty() || !std::filesystem::exists(this->src_path)) {
+        auto msg = std::format("Cannot print image because no source path doesn't exist. Path: {}", this->src_path.string());
+        throw std::invalid_argument(msg);
+    }
+
+    AbstractContentContext::ImageOptions image_option;
+    image_option.transformationMethod = AbstractContentContext::eFit;
+    image_option.boundingBoxWidth = this->width;
+    image_option.boundingBoxHeight = this->heigth;
+    context->DrawImage(this->x,this->y - this->heigth ,this->src_path.string(), image_option);
 }
