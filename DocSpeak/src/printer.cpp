@@ -6,7 +6,7 @@ Printer::Printer(): m_print_job(new PrintJob)
 {
 }
 
-Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path): Printer()
+Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path): m_print_job(new PrintJob)
 {   
     auto success = false;
     success |= set_input_path(input_path).success;
@@ -131,6 +131,8 @@ Printer::StatusInfo Printer::print(const PrintJob& print_job) {
     try
     {
         for (auto i = 0; i < print_job.size(); i++) {
+            if (print_job[i] -> x < 0 || print_job[i] -> y < 0)
+                continue;
             print_job[i] -> print(contentContext);
         }
         success = true;

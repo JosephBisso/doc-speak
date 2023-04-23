@@ -5,7 +5,7 @@
 
 namespace docspeak
 {
-    class Summary: public Protocol
+    class Summary: public Protocol<Summary>
     {
     private:
         std::string m_reason_of_consultation;
@@ -25,8 +25,8 @@ namespace docspeak
         inline std::string get_findings() {return m_findings;}
 
 
-        void print() override;
-        std::string to_string() override;
+        // Printer::StatusInfo print();
+        std::string to_string();
     };
         
 } // namespace docspeak

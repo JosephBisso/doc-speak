@@ -28,6 +28,9 @@ protected:
         doctor1 = DOCTOR("Doctor1", "King1", "m", "012345");
 
         patient1 = PATIENT("Patient1", "BisBi1", "f", insurance1, "52345");
+
+        Prescription::s_template_pdf_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\blank.pdf";
+        Prescription::s_font_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\arial.ttf";
     }
 
     void TearDown() override {
@@ -64,6 +67,28 @@ TEST_F(PrescriptionTest, CheckNumOfMedication) {
     EXPECT_EQ(PrescriptionBook::size(), 1); 
 
     EXPECT_EQ(prescription -> get_num_of_medications(), 2); 
+
+}
+
+TEST_F(PrescriptionTest, PrintPrescriptionToPDF) {
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::system_clock::to_time_t(now);
+    auto record = RECORD(timestamp, patient1);
+
+    auto prescription = PRESCRIPTION(medication1, record);
+
+    (*prescription) << medication2;
+        
+    EXPECT_EQ(RecordBook::size(), 1); 
+    EXPECT_EQ(PrescriptionBook::size(), 1); 
+
+    EXPECT_EQ(prescription -> get_num_of_medications(), 2); 
+
+    prescription -> set_auf_idem(2);
+    prescription -> set_cost_bearer(patient1->get_health_insurance().name);
+
+    auto print_status = prescription -> print();
+    EXPECT_TRUE(print_status.success); 
 
 }
 
