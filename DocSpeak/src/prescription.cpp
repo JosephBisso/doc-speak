@@ -126,7 +126,7 @@ Printer::StatusInfo Prescription::print() {
         default:
             if (element.type == TemplateElement::Text) 
                 printer << Printer::Text (element.x, element.y, element.text_or_path, element.width_or_size, element.color);
-            else
+            else if (element.type == TemplateElement::Image) 
                 printer << Printer::Image (element.x, element.y, element.text_or_path, element.width_or_size, element.heigth);
             break;
         }
@@ -225,6 +225,7 @@ std::vector<std::map<std::string, TemplateElement>> Protocol<Prescription>::s_te
         {"accident_employer", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_EMPLOYER, 10 + 75, 17, "accident_employer", 8)},
         {"accident_date", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_DATE, 12, 17, "accident_date", 8)},
         {"stamp", TemplateElement(Prescription::PrescriptionElement::STAMP, (3*400)/4 + 50 , 280/2 - 5, "path", 50, TemplateElement::Type::Image, 50)},
-        {"doctor_signature", TemplateElement(Prescription::PrescriptionElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10)}
+        {"doctor_signature", TemplateElement(Prescription::PrescriptionElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10)},
+        {"page_dimensions", TemplateElement(400, 280)}
     }
 };

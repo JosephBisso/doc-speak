@@ -10,10 +10,14 @@
 namespace docspeak
 {
     struct TemplateElement {
-            enum Type {Text, Image};
+            enum Type {Text, Image, PageDimension};
             TemplateElement(int id, size_t x, size_t y, std::string text, size_t size, Type type = Type::Text, size_t heigth = 100, long int color = 0x0):
             x(x), y(y), width_or_size(size), heigth(heigth), text_or_path(text),  element_id(id), type(type), color(color)
             {}
+            TemplateElement(size_t width, size_t heigth):
+            width_or_size(width), heigth(heigth), element_id(0), type(PageDimension)
+            {}
+            TemplateElement(){}
             size_t x, y, width_or_size, heigth;
             std::string text_or_path;
             long int color;
@@ -68,6 +72,17 @@ namespace docspeak
 
         inline void set_output_folder(const std::filesystem::path& output_folder) {m_output_folder = output_folder;}
         inline std::filesystem::path& get_output_folder() {return m_output_folder;}
+
+        static std::pair<size_t, Template&> new_template(size_t index_template_to_copy = 0){
+            size_t index = index_template_to_copy;
+            if (index >= s_templates.size())
+                index = 0;
+
+            s_templates.push_back(std::map (s_templates.at(index)));
+            
+            auto new_template_index = s_templates.size() -1;
+            return { new_template_index, s_templates.at(new_template_index)};
+        }
 
         constexpr Template get_current_template()  {return s_templates.at(s_current_template_index);}
         // Printer::Text& get_text_template_element(std::string element) {
