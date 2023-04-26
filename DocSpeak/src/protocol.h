@@ -9,6 +9,18 @@
 
 namespace docspeak
 {
+    struct TemplateElement {
+            enum Type {Text, Image};
+            TemplateElement(int id, size_t x, size_t y, std::string text, size_t size, Type type = Type::Text, size_t heigth = 100, long int color = 0x0):
+            x(x), y(y), width_or_size(size), heigth(heigth), text_or_path(text),  element_id(id), type(type), color(color)
+            {}
+            size_t x, y, width_or_size, heigth;
+            std::string text_or_path;
+            long int color;
+            int element_id;
+            Type type = Type::Text;
+    };
+
     template<typename T>
     class Protocol
     {
@@ -20,15 +32,17 @@ namespace docspeak
     public:
         static std::filesystem::path s_template_pdf_path;
         static std::filesystem::path s_assets_path;
-        static std::string s_current_template_name;
+        static size_t s_current_template_index;
         static std::filesystem::path s_font_path;
-
-        typedef std::map<std::string, Printer::Printable*> Template;
-
-        static std::map<std::string, Template> s_templates;
+        
+        typedef std::map<std::string, TemplateElement> Template;
+        static std::vector<Template> s_templates;
     
     private:
         void __init() {            
+            if(s_template_pdf_path.empty() && s_font_path.empty())
+                return;
+                
             auto input_path_set = m_printer -> set_input_path(s_template_pdf_path);
             auto font_set = m_printer -> set_font_path(s_font_path);
 
@@ -55,17 +69,17 @@ namespace docspeak
         inline void set_output_folder(const std::filesystem::path& output_folder) {m_output_folder = output_folder;}
         inline std::filesystem::path& get_output_folder() {return m_output_folder;}
 
-        constexpr Template get_current_template()  {return s_templates.at(s_current_template_name);}
-        Printer::Text& get_text_template_element(std::string element) {
-            auto current_template = s_templates.at(s_current_template_name);
-            return *(dynamic_cast<Printer::Text*>(current_template[element]));
+        constexpr Template get_current_template()  {return s_templates.at(s_current_template_index);}
+        // Printer::Text& get_text_template_element(std::string element) {
+        //     auto current_template = s_templates.at(s_current_template_name);
+        //     return *(dynamic_cast<Printer::Text*>(current_template[element]));
 
-        }
-        Printer::Image& get_image_template_element(std::string element) {
-            auto current_template = s_templates.at(s_current_template_name);
-            return *(dynamic_cast<Printer::Image*>(current_template[element]));
+        // }
+        // Printer::Image& get_image_template_element(std::string element) {
+        //     auto current_template = s_templates.at(s_current_template_name);
+        //     return *(dynamic_cast<Printer::Image*>(current_template[element]));
 
-        }
+        // }
 
         constexpr std::shared_ptr<Printer> get_printer() {return m_printer;}
 
@@ -95,11 +109,9 @@ namespace docspeak
     std::filesystem::path Protocol<T>::s_font_path;
 
     template<typename T> 
-    std::string Protocol<T>::s_current_template_name = "default";
+    size_t Protocol<T>::s_current_template_index = 0;
 
-    
 
-    
 } // namespace docspeak
 
 

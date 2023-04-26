@@ -12,7 +12,7 @@ namespace docspeak {
         void _save() override;
         void _load() override;
     public:
-        Doctor(const std::string& first_name, const std::string& last_name, const std::string& sex, const std::string& doctor_number) : Person(Person::DOCTOR, first_name, last_name, sex), m_doctor_number(doctor_number) {};
+        Doctor(const std::string& first_name, const std::string& last_name, const std::string& sex, const std::string& doctor_number, const std::chrono::year_month_day& birth_date = std::chrono::January / 1 / 2023) : Person(Person::DOCTOR, first_name, last_name, sex, birth_date), m_doctor_number(doctor_number) {};
         ~Doctor() {};
 
         inline void set_doctor_number(const std::string& doctor_number) {m_doctor_number = doctor_number;}

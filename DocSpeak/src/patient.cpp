@@ -2,31 +2,18 @@
 
 using namespace docspeak;
 
-Patient::Patient(const std::string& first_name,const std::string& last_name, const std::string& sex,  const Insurance& health_insurance, const std::string& insurance_number) : Person(Person::PATIENT, first_name, last_name, sex), m_health_insurance(health_insurance), m_insurance_number(insurance_number)
+Patient::Patient(const std::string& first_name,const std::string& last_name, const std::string& sex,  const Insurance& health_insurance, const std::string& insurance_number, const std::string status,  const std::chrono::year_month_day& birth_date) : 
+    Person(Person::PATIENT, first_name, last_name, sex, birth_date), m_health_insurance(health_insurance), m_insurance_number(insurance_number), m_status(status)
 {
     
 }
 
-std::shared_ptr<Patient> docspeak::PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number) {
-    auto patient = std::shared_ptr<Patient>(new Patient(first_name, last_name, sex, health_insurance, insurance_number));
+std::shared_ptr<Patient> docspeak::PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number, const std::string status, const std::chrono::year_month_day& birth_date) {
+    auto patient = std::shared_ptr<Patient>(new Patient(first_name, last_name, sex, health_insurance, insurance_number, status, birth_date));
 
     PatientBook::add(patient);
 
     return patient;
-}
-
-std::shared_ptr<Record> docspeak::RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor) {
-    std::shared_ptr<Record> record (new Record(timestamp));
-
-    if (doctor)
-        record -> set_doctor(doctor);
-
-    patient -> add_record(record);
-    
-    RecordBook::add(record);
-    return record;
-
-
 }
 
 Patient::~Patient()
@@ -70,13 +57,5 @@ bool Patient::is_like(const Patient& patient) const {
 }
 
 void Patient::add_record(std::shared_ptr<Record> record) {
-    for (auto r : m_records) {
-        if (r.lock() -> get_timestamp() == record -> get_timestamp()) {
-            auto msg = std::format("Record already added. Timestamp {}", record -> get_timestamp());
-            throw std::invalid_argument (msg.c_str()) ;
-        }
-    }
-
     m_records.push_back(std::weak_ptr(record));
-
 }

@@ -25,7 +25,7 @@ namespace docspeak {
     
 
     public:
-        explicit Person(Type type, const std::string& first_name, const std::string& last_name, const std::string& sex);
+        explicit Person(Type type, const std::string& first_name, const std::string& last_name, const std::string& sex, const std::chrono::year_month_day& birth_date = std::chrono::January / 1 / 2023);
         ~Person();
 
         virtual void _save() = 0;
@@ -43,6 +43,8 @@ namespace docspeak {
         inline void set_last_name(const std::string& last_name) {m_last_name = last_name;}
         inline std::string get_last_name() const {return m_last_name;}
 
+        inline std::string get_full_name() {return std::format("{}, {}", m_first_name, m_last_name);}
+        
         inline void set_phone_number(const std::string& phone_number) {m_phone_number = phone_number;}
         inline std::string get_phone_number() const {return m_phone_number;}
 

@@ -2,11 +2,11 @@
 
 using namespace docspeak;
 
-Printer::Printer(): m_print_job(new PrintJob)
+Printer::Printer()
 {
 }
 
-Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path): m_print_job(new PrintJob)
+Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path)
 {   
     auto success = false;
     success |= set_input_path(input_path).success;
@@ -156,11 +156,7 @@ Printer::StatusInfo Printer::print(const PrintJob& print_job) {
 }
 
 void Printer::clear_print_job() {
-    for (auto i = 0; i < m_print_job->size(); i++) {
-        delete m_print_job->at(i);
-        m_print_job->at(i) = nullptr;
-    }
-    m_print_job -> clear();
+    m_print_job.clear();
 }
 
 Printer::StatusInfo Printer::test() {

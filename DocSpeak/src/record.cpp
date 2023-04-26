@@ -11,6 +11,8 @@ Record::~Record()
 {
 }
 
+std::string Record::s_date_format = "%d-%m-%Y";
+
 template<>
 void Book<Record>::add(std::shared_ptr<Record> element) {
     if (!s_instance)
@@ -51,14 +53,21 @@ bool Record::equals(const Record& record) const {
             get_timestamp() == record.get_timestamp();
 }
 
-std::shared_ptr<Prescription> docspeak::PRESCRIPTION (const std::string& medication, std::shared_ptr<Record> record) {
-    std::shared_ptr<Prescription> prescription (new Prescription(medication));
+std::shared_ptr<Record> docspeak::RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor) {
+    std::shared_ptr<Record> record (new Record(timestamp));
+
+    if (doctor)
+        record -> set_doctor(doctor);
+
+    patient -> add_record(record);
+    record -> set_patient(patient);
     
-    PrescriptionBook::add(prescription);
-
-    record -> set_prescription(prescription);
-
-    return prescription;
+    RecordBook::add(record);
+    return record;
 }
 
-
+std::string docspeak::toString(std::time_t timestamp, const char* date_format) {
+    char timeString[std::size("dd-mm-yyyy")];
+    std::strftime(std::data(timeString), std::size(timeString), date_format, std::gmtime(&timestamp));
+    return timeString;
+}

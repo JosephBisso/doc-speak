@@ -23,45 +23,116 @@ void Prescription::add_medication(const std::string& medication) {
 
 
 Printer::StatusInfo Prescription::print() {
-    auto printer = get_printer();
-    auto file_name = std::format("prescription_{}.pdf", get_id());
-    auto output_set = printer -> set_output_path(get_output_folder()/file_name);
+    auto& printer = *get_printer();
+    auto file_name = std::format("prescription_{}_{}.pdf", m_record_info.date, get_id());
+    auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
         return Printer::StatusInfo(false, output_set.error_message);
     }
 
+
     auto current_template = Prescription::get_current_template();
-    
-    dynamic_cast<Printer::Text*>(current_template["cost_bearer"]) -> text = m_cost_bearer;
-    dynamic_cast<Printer::Text*>(current_template["charge_type_free"]) -> text = m_charge_type && ChargeType::Free ? "X" : "";
-    dynamic_cast<Printer::Text*>(current_template["charge_type_apply"]) -> text = m_charge_type && ChargeType::Apply ? "X" : "";
-    dynamic_cast<Printer::Text*>(current_template["charge_type_nigth"]) -> text = m_charge_type && ChargeType::Nigth ? "X" : "";
-    dynamic_cast<Printer::Text*>(current_template["charge_type_others"]) -> text = m_charge_type && ChargeType::Others ? "X" : "";
-    
-    if (m_accident.accident_type != Accident::None) {
-        dynamic_cast<Printer::Text*>(current_template["accident"]) -> text = "X";
-        dynamic_cast<Printer::Text*>(current_template["accident_work"]) -> text = m_accident.accident_type == Accident::Work ? "X" : "";
-        dynamic_cast<Printer::Text*>(current_template["accident_employer"]) -> text = m_accident.employer;
-        dynamic_cast<Printer::Text*>(current_template["accident_date"]) -> text = std::format("{}", m_accident.accident_date);
-    } else {
-        dynamic_cast<Printer::Text*>(current_template["accident"]) -> text = "";
-        dynamic_cast<Printer::Text*>(current_template["accident_work"]) -> text = "";
-        dynamic_cast<Printer::Text*>(current_template["accident_employer"]) -> text = "";
-        dynamic_cast<Printer::Text*>(current_template["accident_date"]) -> text = "";
-    }
-
-    for (auto i = 0; i < m_medications.size(); i++) {
-        dynamic_cast<Printer::Text*>(current_template[std::format("medication_{}", i + 1)]) -> text = m_medications[i];
-        dynamic_cast<Printer::Text*>(current_template[std::format("med_auf_idem_{}", i + 1)]) -> text = m_med_auf_idem[i] ? "X" : "";
-    }
-
-    dynamic_cast<Printer::Image*>(current_template["stamp"]) -> src_path = Prescription::s_assets_path / "stamp.jfif";
+    bool work_accident_occured = m_accident.accident_type == Accident::AccidentType::Work; 
 
     for (auto [name, element] : current_template) {
-        (*printer) << *element;
+        switch (element.element_id)
+        {
+        case PrescriptionElement::COST_BEARER:
+            printer << Printer::Text (element.x, element.y, m_cost_bearer, element.width_or_size, element.color);
+            break;
+        case PrescriptionElement::PATIENT_NAME:
+            printer << Printer::Text (element.x, element.y, m_record_info.patient_name, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::PATIENT_BIRTH_DATE:
+            printer << Printer::Text (element.x, element.y, m_record_info.patient_birth_date, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::PATIENT_NUMBER:
+            printer << Printer::Text (element.x, element.y, m_record_info.patient_number, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::PATIENT_STATUS:
+            printer << Printer::Text (element.x, element.y, m_record_info.patient_status, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::INSURANCE_NUMBER:
+            printer << Printer::Text (element.x, element.y, m_record_info.insurance_number, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::HOUSE_NUMBER:
+            printer << Printer::Text (element.x, element.y, m_house_number, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::DOCTOR_NUMBER:
+            printer << Printer::Text (element.x, element.y, m_record_info.doctor_number, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::DATE:
+            printer << Printer::Text (element.x, element.y, m_record_info.date, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::CHARGE_TYPE_FREE:
+            printer << Printer::Text (m_charge_type & ChargeType::Free ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::CHARGE_TYPE_APPLY:
+            printer << Printer::Text (m_charge_type & ChargeType::Apply ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::CHARGE_TYPE_NIGTH:
+            printer << Printer::Text (m_charge_type & ChargeType::Nigth ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::CHARGE_TYPE_OTHERS:
+            printer << Printer::Text (m_charge_type & ChargeType::Others ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::ACCIDENT:
+            printer << Printer::Text (m_accident.accident_type != Accident::AccidentType::None ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::ACCIDENT_WORK:
+            printer << Printer::Text (work_accident_occured ? element.x : -1, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::ACCIDENT_EMPLOYER:
+            if (work_accident_occured)
+                printer << Printer::Text (element.x, element.y, m_accident.employer, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::ACCIDENT_DATE:
+            if (work_accident_occured)
+                printer << Printer::Text (element.x, element.y, docspeak::toString(m_accident.accident_date, Record::s_date_format.c_str()), element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MEDICATION_1:
+            if(m_num_of_medications >= 1)
+                printer << Printer::Text (element.x, element.y, m_medications[0], element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MEDICATION_2:
+            if(m_num_of_medications >= 2)
+                printer << Printer::Text (element.x, element.y, m_medications[1], element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MEDICATION_3:
+            if(m_num_of_medications >= 3)
+                printer << Printer::Text (element.x, element.y, m_medications[2], element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MED_AUF_IDEM_1:
+            if(m_med_auf_idem[0])
+                printer << Printer::Text (element.x, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MED_AUF_IDEM_2:
+            if(m_med_auf_idem[1])
+                printer << Printer::Text (element.x, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::MED_AUF_IDEM_3:
+            if(m_med_auf_idem[2])
+                printer << Printer::Text (element.x, element.y, element.text_or_path, element.width_or_size, element.color); 
+            break;
+        case PrescriptionElement::STAMP:
+            if (std::filesystem::exists(Prescription::s_assets_path / "stamp.jfif"))
+                printer << Printer::Image(element.x, element.y, (Prescription::s_assets_path / "stamp.jfif").string(), element.width_or_size, element.heigth); 
+            break;
+        case PrescriptionElement::DOCTOR_SIGNATURE:
+            if (std::filesystem::exists(Prescription::s_assets_path / std::format("{}_signature.jfif", m_record_info.doctor_number)))
+                printer << Printer::Image (element.x, element.y, std::format("{}_signature.jfif", m_record_info.doctor_number), element.width_or_size, element.heigth); 
+            break;
+        
+        default:
+            if (element.type == TemplateElement::Text) 
+                printer << Printer::Text (element.x, element.y, element.text_or_path, element.width_or_size, element.color);
+            else
+                printer << Printer::Image (element.x, element.y, element.text_or_path, element.width_or_size, element.heigth);
+            break;
+        }
     }
 
-    return printer -> print();
+    return printer.print();
 
 }
 
@@ -100,32 +171,60 @@ void Book<Prescription>::add(std::shared_ptr<Prescription> element) {
     s_instance -> m_elements.push_back(std::move(element));
 }
 
+std::shared_ptr<Prescription> docspeak::PRESCRIPTION (const std::string& medication, std::shared_ptr<Record> record) {
+    std::shared_ptr<Prescription> prescription (new Prescription(medication));
+    
+    std::string doctor_number;
+    if (auto doctor_observer = record->get_doctor(); auto doctor = doctor_observer.lock()) 
+        doctor_number = doctor->get_doctor_number();
+
+
+    if (auto patient_observer = record->get_patient(); auto patient = patient_observer.lock()) {
+        prescription -> set_record_info({
+            .patient_name = patient->get_full_name(),
+            .patient_number = patient->get_insurance_number(),
+            .patient_birth_date = toString(patient->get_birth_date(), Record::s_date_format.c_str()),
+            .patient_status = patient->get_status(),
+            .insurance_number = patient->get_health_insurance().number,
+            .doctor_number = doctor_number,
+            .date = toString(record->get_timestamp(), Record::s_date_format.c_str())
+        });
+    }
+
+    PrescriptionBook::add(prescription);
+
+    record -> set_prescription(prescription);
+
+    return prescription;
+}
+
 template<> 
-std::map<std::string, Protocol<Prescription>::Template> Protocol<Prescription>::s_templates = {
-    {"default", {
-            {"cost_bearer", new Printer::Text(0, 0, "cost_bearer", 14)},
-            {"patient_name", new Printer::Text(0, 0, "patient_name", 14)},
-            {"patient_number", new Printer::Text(0, 0, "patient_number", 14)},
-            {"insurance_number", new Printer::Text(0, 0, "insurance_number", 14)},
-            {"doctor_number", new Printer::Text(0, 0, "doctor_number", 14)},
-            {"date", new Printer::Text(0, 0, "date", 14)},
-            {"charge_type_free", new Printer::Text(0, 0, "X", 20)},
-            {"charge_type_apply", new Printer::Text(0, 0, "X", 20)},
-            {"charge_type_nigth", new Printer::Text(0, 0, "X", 20)},
-            {"charge_type_apply", new Printer::Text(0, 0, "X", 20)},
-            {"charge_type_others", new Printer::Text(0, 0, "X", 20)},
-            {"accident", new Printer::Text(0, 0, "X", 20)},
-            {"accident_work", new Printer::Text(0, 0, "X", 20)},
-            {"accident_employer", new Printer::Text(0, 0, "accident_employer", 14)},
-            {"accident_date", new Printer::Text(0, 0, "accident_date", 14)},
-            {"medication_1", new Printer::Text(0, 0, "medication_1", 14)},
-            {"medication_2", new Printer::Text(0, -1, "medication_2", 14)},
-            {"medication_3", new Printer::Text(0, -1, "medication_3", 14)},
-            {"med_auf_idem_1", new Printer::Text(0, -1, "X", 20)},
-            {"med_auf_idem_2", new Printer::Text(0, -1, "X", 20)},
-            {"med_auf_idem_3", new Printer::Text(0, -1, "X", 20)},
-            {"stamp", new Printer::Image(0,0, "path", 200, 100)},
-            {"doctor_signature", new Printer::Image(-1,0, "path", 200, 100)}
-        }
+std::vector<std::map<std::string, TemplateElement>> Protocol<Prescription>::s_templates = {
+    {
+        {"cost_bearer", TemplateElement(Prescription::PrescriptionElement::COST_BEARER, 400/16 + 10, 280 - 15, "cost_bearer", 8)},
+        {"patient_name", TemplateElement(Prescription::PrescriptionElement::PATIENT_NAME, 400/16 + 10, 280 - 60, "patient_name", 8)},
+        {"patient_birth_date", TemplateElement(Prescription::PrescriptionElement::PATIENT_BIRTH_DATE, 400/16 + 10 + 170, 280 - 60, "patient_birth_date", 8)},
+        {"insurance_number", TemplateElement(Prescription::PrescriptionElement::INSURANCE_NUMBER, 400/16 + 10, 280 - 100, "insurance_number", 8)},
+        {"patient_number", TemplateElement(Prescription::PrescriptionElement::PATIENT_NUMBER, 400/16 + 10 + 75, 280 - 100, "patient_status", 8)},
+        {"patient_status", TemplateElement(Prescription::PrescriptionElement::PATIENT_STATUS, 400/16 + 10 + 170, 280 - 100, "patient_number", 8)},
+        {"doctor_number", TemplateElement(Prescription::PrescriptionElement::DOCTOR_NUMBER, 400/16 + 10 + 75, 280 - 125, "doctor_number", 8)},
+        {"house_number", TemplateElement(Prescription::PrescriptionElement::HOUSE_NUMBER, 400/16 + 10, 280 - 125, "house_number", 8)},
+        {"date", TemplateElement(Prescription::PrescriptionElement::DATE, 400/16 + 10 + 170, 280 - 125, "date", 8)},
+        {"medication_1", TemplateElement(Prescription::PrescriptionElement::MEDICATION_1, 400/16 + 10, 280/2 - 22, "medication_1", 8)},
+        {"medication_2", TemplateElement(Prescription::PrescriptionElement::MEDICATION_2, 400/16 + 10, 280/2 - 45, "medication_2", 8)},
+        {"medication_3", TemplateElement(Prescription::PrescriptionElement::MEDICATION_3, 400/16 + 10, 280/2 - 68, "medication_3", 8)},
+        {"med_auf_idem_1", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_1, 10, 280/2 - 22, "X", 10)},
+        {"med_auf_idem_2", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_2, 10, 280/2 - 45, "X", 10)},
+        {"med_auf_idem_3", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_3, 10, 280/2 - 68, "X", 10)},
+        {"charge_type_free", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_FREE, 10,  280 - 20, "X", 10)},
+        {"charge_type_apply", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_APPLY, 10, 280 - 35, "X", 10)},
+        {"charge_type_nigth", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_NIGTH, 10, 280 - 55, "X", 10)},
+        {"charge_type_others", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_OTHERS, 10,280 - 80, "X", 10)},
+        {"accident", TemplateElement(Prescription::PrescriptionElement::ACCIDENT, 10, 280 - 105  , "X", 10)},
+        {"accident_work", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_WORK, 10, 280 - 130, "X", 10)},
+        {"accident_employer", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_EMPLOYER, 10 + 75, 17, "accident_employer", 8)},
+        {"accident_date", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_DATE, 12, 17, "accident_date", 8)},
+        {"stamp", TemplateElement(Prescription::PrescriptionElement::STAMP, (3*400)/4 + 50 , 280/2 - 5, "path", 50, TemplateElement::Type::Image, 50)},
+        {"doctor_signature", TemplateElement(Prescription::PrescriptionElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10)}
     }
 };

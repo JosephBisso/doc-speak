@@ -75,7 +75,7 @@ namespace docspeak {
             virtual void print(AbstractContentContext* context) const override; 
         };
 
-        typedef std::vector<Printable*> PrintJob;
+        typedef std::vector<std::shared_ptr<Printable>> PrintJob;
 
     private:
         std::filesystem::path m_input_path;
@@ -84,7 +84,7 @@ namespace docspeak {
         std::filesystem::path m_assets_folder_path;
         bool m_printer_ready = false;
 
-        std::shared_ptr<PrintJob> m_print_job;
+        PrintJob m_print_job;
 
     public:
         Printer();
@@ -108,10 +108,10 @@ namespace docspeak {
         bool check_all();
 
         StatusInfo print(const PrintJob& print_job);
-        inline StatusInfo print() {return print(*m_print_job);}
+        inline StatusInfo print() {return print(m_print_job);}
         StatusInfo test() ;
 
-        inline std::shared_ptr<PrintJob> get_print_job(){return m_print_job;}
+        inline PrintJob& get_print_job(){return m_print_job;}
         void clear_print_job();
 
     private:
@@ -124,13 +124,13 @@ namespace docspeak {
 inline docspeak::Printer& operator<< (docspeak::Printer& stream, const docspeak::Printer::Printable& job) {
     if (dynamic_cast<const docspeak::Printer::Text*> (&job)) {
         auto printable_text = dynamic_cast<const docspeak::Printer::Text*> (&job);
-        auto text = new docspeak::Printer::Text(printable_text->x, printable_text->y, printable_text->text, printable_text->font_size, printable_text->color);
+        std::shared_ptr<docspeak::Printer::Text> text (new docspeak::Printer::Text(printable_text->x, printable_text->y, printable_text->text, printable_text->font_size, printable_text->color));
         text -> adjust_to_middle = printable_text -> adjust_to_middle;
-        stream.get_print_job() -> push_back(text);
+        stream.get_print_job().push_back(std::move(text));
     } else {
         auto printable_img = dynamic_cast<const docspeak::Printer::Image*> (&job);
-        auto img = new docspeak::Printer::Image(printable_img->x, printable_img->y, printable_img->src_path, printable_img->width, printable_img->heigth);
-        stream.get_print_job() -> push_back(img);
+        std::shared_ptr<docspeak::Printer::Image> img (new docspeak::Printer::Image(printable_img->x, printable_img->y, printable_img->src_path, printable_img->width, printable_img->heigth));
+        stream.get_print_job().push_back(std::move(img));
     }
     // stream.get_print_job() -> push_back((const_cast<docspeak::Printer::Printable&>(job)));
     return stream;

@@ -2,10 +2,11 @@
 #define PATIENT_H
 
 #include "person.h"
-#include "record.h"
 #include "doctor.h"
 
 namespace docspeak {
+    class Record;
+
     typedef std::vector<std::weak_ptr<Record>> Records;
 
     struct Insurance {
@@ -21,14 +22,14 @@ namespace docspeak {
     private:
         Insurance m_health_insurance;
         std::string m_insurance_number;
-        std::string status;
+        std::string m_status;
         Records m_records;
     private:
         void _save() override;
         void _load() override;
 
     public:
-        explicit Patient(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number);
+        explicit Patient(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number, const std::string status = "123", const std::chrono::year_month_day& birth_date = std::chrono::January / 1 / 2023);
         ~Patient();
 
         inline void set_health_insurance(const Insurance& health_insurance) {m_health_insurance = health_insurance;}
@@ -36,6 +37,9 @@ namespace docspeak {
 
         inline void set_insurance_number(const std::string& insurance_number) {m_insurance_number = insurance_number;}
         inline std::string get_insurance_number() const {return m_insurance_number;}
+
+        inline void set_status(const std::string& status) {m_status = status;}
+        inline std::string get_status() const {return m_status;}
 
         void add_record(std::shared_ptr<Record> record);
         inline Records& get_records() {return m_records;}
@@ -47,8 +51,7 @@ namespace docspeak {
 
     typedef Book<Patient, Person> PatientBook;
 
-    std::shared_ptr<Patient> PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number);
-    std::shared_ptr<Record> RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor = nullptr);
+    std::shared_ptr<Patient> PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number, const std::string status = "123", const std::chrono::year_month_day& birth_date = std::chrono::January / 1 / 2023);
 
 }
 #endif

@@ -19,4 +19,4 @@ std::string Summary::to_string() {
 }
 
 template<>
-std::map<std::string, Protocol<Summary>::Template> Protocol<Summary>::s_templates;
+std::vector<std::map<std::string, TemplateElement>> Protocol<Summary>::s_templates;

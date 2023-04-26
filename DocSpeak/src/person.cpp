@@ -2,7 +2,8 @@
 
 using namespace docspeak;
 
-Person::Person(Type type, const std::string& first_name,const std::string& last_name, const std::string& sex) : m_type(type), m_first_name (first_name), m_last_name(last_name), m_sex(sex)
+Person::Person(Type type, const std::string& first_name,const std::string& last_name, const std::string& sex, const std::chrono::year_month_day& birth_date) : 
+    m_type(type), m_first_name (first_name), m_last_name(last_name), m_sex(sex), m_birth_date(birth_date)
 {
     if (first_name.empty() && last_name.empty()) {
         auto msg = std::format("Either the first or last name should not be empty");
