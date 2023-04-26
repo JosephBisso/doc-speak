@@ -2,8 +2,8 @@
 
 using namespace docspeak;
 
-std::shared_ptr<Doctor> docspeak::DOCTOR (const std::string& first_name, const std::string& last_name, const std::string& sex, const std::string& doctor_number) {
-    std::shared_ptr<Doctor> doctor (new Doctor(first_name, last_name, sex, doctor_number));
+std::shared_ptr<Doctor> docspeak::DOCTOR (const std::string& first_name, const std::string& last_name, const std::string& sex, const std::string& doctor_number, const std::chrono::year_month_day& birth_date) {
+    std::shared_ptr<Doctor> doctor (new Doctor(first_name, last_name, sex, doctor_number, birth_date));
 
     DoctorBook::add(doctor);
 

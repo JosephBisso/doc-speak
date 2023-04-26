@@ -25,12 +25,12 @@ class BookTest : public ::testing::Test {
   void SetUp() override {
      // Code here will be called immediately after the constructor (right
      // before each test).
-    doctor1 = DOCTOR("Doctor1", "King1", "m", "012345");
-    doctor2 = DOCTOR("Doctor2", "King2", "f", "456");
+    doctor1 = DOCTOR("Doctor1", "King1", "m", "012345", std::chrono::January / 2 / 2024);
+    doctor2 = DOCTOR("Doctor2", "King2", "f", "456", std::chrono::February / 1 / 2012);
 
-    patient1 = PATIENT("Patient1", "BisBi1", "f", insurance1, "52345");
-    patient2 = PATIENT("Patient2", "BisBi2", "m", insurance2, "2345");
-    patient3 = PATIENT("Patient3", "BisBi3", "f", insurance3, "689");
+    patient1 = PATIENT("Patient1", "BisBi1", "f", insurance1, "52345", "123",std::chrono::March / 3 / 2000);
+    patient2 = PATIENT("Patient2", "BisBi2", "m", insurance2, "2345", "345",std::chrono::April / 4 / 2001);
+    patient3 = PATIENT("Patient3", "BisBi3", "f", insurance3, "689", "567",std::chrono::May / 5 / 2002);
   }
 
   void TearDown() override {

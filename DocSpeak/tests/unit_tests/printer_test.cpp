@@ -98,12 +98,12 @@ TEST_F(PrinterTest, PrintPDFFromJob) {
    title3.adjust_to_middle = true;
    (*printer) << title3;
 
-   EXPECT_GT(printer -> get_print_job() -> size(), 0); 
+   EXPECT_GT(printer -> get_print_job().size(), 0); 
 
    auto print_status = printer -> print();
    EXPECT_TRUE(print_status.success); 
 
-   EXPECT_EQ(printer -> get_print_job() -> size(), 0); 
+   EXPECT_EQ(printer -> get_print_job().size(), 0); 
 
    EXPECT_TRUE(std::filesystem::exists(output_path)); 
 
