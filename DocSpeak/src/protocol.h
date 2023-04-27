@@ -54,8 +54,10 @@ namespace docspeak
             auto input_path_set = m_printer -> set_input_path(template_pdf_path);
             auto font_set = m_printer -> set_font_path(s_font_path);
 
-            if (!(input_path_set.success && font_set.success)) 
+            if (!(input_path_set.success && font_set.success)) {
+                PLOGW << "Cannot create Protocol. Template path or Font path invalid! Check the given path";
                 throw std::invalid_argument("Cannot create Protocol. Template path or Font path invalid! Check the given path");
+            }
         }
 
     public:
@@ -80,16 +82,21 @@ namespace docspeak
                 return;
 
             if (std::filesystem::exists(output_folder)) {
+                PLOGI << std::format("Setting output folder to {}", output_folder.string());
                 m_output_folder = output_folder;
                 return;
             } 
 
             std::error_code ec;
             auto created = std::filesystem::create_directory(output_folder, ec);
-            if (created)
+            if (created) {
+                PLOGI << std::format("Setting output folder to {}", output_folder.string());
                 m_output_folder = output_folder;
-            else 
+            }
+            else {
+                PLOGW << std::format("Cannot create folder at path {}. Error: {}", output_folder.string(), ec.message());
                 throw std::invalid_argument(ec.message());
+            }
         }
 
         static void set_output_folder(const std::filesystem::path& output_folder) {
@@ -97,16 +104,21 @@ namespace docspeak
                 return;
 
             if (std::filesystem::exists(output_folder)) {
+                PLOGI << std::format("Setting output folder to {}", output_folder.string());
                 s_output_folder = output_folder;
                 return;
             } 
 
             std::error_code ec;
             auto created = std::filesystem::create_directory(output_folder, ec);
-            if (created)
+            if (created) {
+                PLOGI << std::format("Setting output folder to {}", output_folder.string());
                 s_output_folder = output_folder;
-            else 
+            }
+            else {
+                PLOGW << std::format("Cannot create folder at path {}. Error: {}", output_folder.string(), ec.message());
                 throw std::invalid_argument(ec.message());
+            } 
         }
 
         static std::pair<size_t, Template&> new_template(size_t index_template_to_copy = 0){
@@ -119,6 +131,7 @@ namespace docspeak
             auto new_template_index = s_templates.size() -1;
             s_current_template_index = new_template_index;
             
+            PLOGV << std::format("New Template at index {}", new_template_index);
             return { new_template_index, s_templates.at(new_template_index)};
         }
 

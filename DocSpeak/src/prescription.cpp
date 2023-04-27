@@ -18,6 +18,7 @@ void Prescription::add_medication(const std::string& medication) {
     }
 
     auto msg = std::format("Cannot add more than 3 medications in a prescription.");
+    PLOGW << msg;
     throw std::invalid_argument (msg.c_str()) ;
 }
 
@@ -27,6 +28,7 @@ Printer::StatusInfo Prescription::print() {
     auto file_name = std::format("prescription_{}_{}_Patient{}.pdf", get_id(), m_record_info.date, m_record_info.patient_number);
     auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
+        PLOGW << std::format("Print Aborted. reason: {}", output_set.error_message);
         return Printer::StatusInfo(false, output_set.error_message);
     }
 
@@ -165,6 +167,7 @@ void Book<Prescription>::add(std::shared_ptr<Prescription> element) {
 
     if (element -> get_medications().size() == 0) {
         auto msg = std::format("A Prescription must contain at least one medication");
+        PLOGW << msg;
         throw std::invalid_argument (msg.c_str()) ;
     }
 

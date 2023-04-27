@@ -4,16 +4,20 @@ using namespace docspeak;
 
 Printer::Printer()
 {
+    PLOGV << "Creating Printer";
 }
 
 Printer::Printer(const std::filesystem::path& input_path, const std::filesystem::path& output_path)
 {   
+    PLOGV << std::format("Creating Printer with input_path {}; output path {}", input_path.string(), output_path.string());
     auto success = false;
     success |= set_input_path(input_path).success;
     success |= set_output_path(output_path).success;
 
-    if (!success)
+    if (!success){
+        PLOGW << "Cannot create Printer: " << "Input path or Output path invalid! Check the given path";
         throw std::invalid_argument("Input path or Output path invalid! Check the given path");
+    }
 }
 
 Printer::~Printer()
@@ -38,6 +42,7 @@ Printer::StatusInfo Printer::__check_path(const std::filesystem::path& path, boo
     }
 
     auto msg = std::format("Path {} is either invalid or you don't have enough rigth to acces it", path.string());
+    PLOGW << msg;
     return StatusInfo(false, msg);
 
 } 
@@ -48,6 +53,7 @@ bool Printer::__check_if_ready() {
         (!m_font_path.empty()) &&
         (!m_output_path.empty());
 
+    PLOGI << (m_printer_ready ? "Printer ready" : "Printer not ready");
     return m_printer_ready;
 }
 
@@ -58,15 +64,18 @@ bool Printer::check_all() {
         (!m_font_path.empty()) &&
         (!m_assets_folder_path.empty());
 
-
+    PLOGI << (m_printer_ready ? "Printer ready" : "Printer not ready");
     return m_printer_ready;
 }
 
 Printer::StatusInfo Printer::set_input_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
-    if (!check_status.success)
+    if (!check_status.success) {
+        PLOGW << std::format("Cannot set input path because given path is invalid: {}", path.string());
         return check_status;
+    }
     
+    PLOGI << std::format("Setting input path to: {}", path.string());
     m_input_path = path;
     __check_if_ready();
     return StatusInfo(true);
@@ -74,9 +83,12 @@ Printer::StatusInfo Printer::set_input_path(const std::filesystem::path& path) {
 
 Printer::StatusInfo Printer::set_font_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
-    if (!check_status.success)
+    if (!check_status.success){
+        PLOGW << std::format("Cannot set font path because given path is invalid: {}", path.string());
         return check_status;
+    }
     
+    PLOGI << std::format("Setting font path to: {}", path.string());
     m_font_path = path;
     __check_if_ready();
     return StatusInfo(true);
@@ -84,9 +96,12 @@ Printer::StatusInfo Printer::set_font_path(const std::filesystem::path& path) {
 
 Printer::StatusInfo Printer::set_assets_folder_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
-    if (!check_status.success)
+    if (!check_status.success) {
+        PLOGW << std::format("Cannot set assets folder path because given path is invalid: {}", path.string());
         return check_status;
+    }
     
+    PLOGI << std::format("Setting assets folder path to: {}", path.string());
     m_assets_folder_path = path;
     __check_if_ready();
     return StatusInfo(true);
@@ -94,12 +109,15 @@ Printer::StatusInfo Printer::set_assets_folder_path(const std::filesystem::path&
 
 Printer::StatusInfo Printer::set_output_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path);
-    if (!check_status.success)
+    if (!check_status.success) {
+        PLOGW << std::format("Cannot set output path because given path is invalid: {}", path.string());
         return check_status;
+    }
 
     if (std::filesystem::exists(path))
         std::filesystem::remove(path);
     
+    PLOGI << std::format("Setting output path to: {}", path.string());
     m_output_path = path;
     __check_if_ready();
     return StatusInfo(true);
@@ -108,10 +126,12 @@ Printer::StatusInfo Printer::set_output_path(const std::filesystem::path& path) 
 Printer::StatusInfo Printer::print(const PrintJob& print_job) {
     if (!__check_if_ready()) {
         auto msg = std::string("Cannot print because printer is not ready. Specify all Paths first..");
+        PLOGW << msg;
         return StatusInfo(false, msg);
     }
 
     auto start = std::chrono::system_clock::now();
+    PLOGI << std::format("Print Start: {}", start);
     bool success;
     std::string msg;
 
@@ -141,7 +161,7 @@ Printer::StatusInfo Printer::print(const PrintJob& print_job) {
     {
         success = false;
         msg = std::format("Error while printing test file. Exception: {}", exc.what());
-
+        PLOGW << msg;
     }
     
     modifiedPage.EndContentContext();
@@ -151,17 +171,22 @@ Printer::StatusInfo Printer::print(const PrintJob& print_job) {
 
     clear_print_job();
 
+    auto end = std::chrono::system_clock::now();
+    PLOGI << std::format("Print End: {}", end);
+
     return StatusInfo(success, msg);
 
 }
 
 void Printer::clear_print_job() {
+    PLOGV << "Clearing print job";
     m_print_job.clear();
 }
 
 Printer::StatusInfo Printer::test() {
     if (!check_all()) {
         auto msg = std::string("Cannot print because printer is not ready. Specify all Paths first..");
+        PLOGW << msg;
         return StatusInfo(false, msg);
     }
 
@@ -247,6 +272,7 @@ Printer::StatusInfo Printer::test() {
         result = pdfWriter.EndPDF();
     } catch (const std::exception &exc) {
         msg = std::format("Error while printing test file. Exception: {}", exc.what());
+        PLOGW << msg;
     }
 
     return StatusInfo(result == PDFHummus::eSuccess, msg);
@@ -257,6 +283,7 @@ PDFUsedFont* Printer::Printable::font;
 void Printer::Text::print(AbstractContentContext* context) const {
     if (!Printable::font) {
         auto msg = std::format("Cannot print text because no font has been set. Text: {}", this->text);
+        PLOGW << msg;
         throw std::invalid_argument(msg);
     }
 
@@ -269,6 +296,7 @@ void Printer::Text::print(AbstractContentContext* context) const {
             x_adjust = (textDimensions.width / 2);
         }
         
+        PLOGV << std::format("Printing text: {}", line);
         context -> WriteText(this->x - x_adjust, this->y + y_shift, line, text_option);
     };
 
@@ -286,9 +314,11 @@ void Printer::Text::print(AbstractContentContext* context) const {
 void Printer::Image::print(AbstractContentContext* context) const {
     if (this->src_path.empty() || !std::filesystem::exists(this->src_path)) {
         auto msg = std::format("Cannot print image because no source path doesn't exist. Path: {}", this->src_path.string());
+        PLOGW << msg;
         throw std::invalid_argument(msg);
     }
 
+    PLOGV << std::format("Printing Image from sourc: {}", this->src_path.string());
     AbstractContentContext::ImageOptions image_option;
     image_option.transformationMethod = AbstractContentContext::eFit;
     image_option.boundingBoxWidth = this->width;

@@ -2,6 +2,7 @@
 #define SERIALIZABLE_H
 
 #include <nlohmann/json.hpp>
+#include <plog/Log.h>
 
 #include <string>
 #include <chrono>
@@ -32,7 +33,7 @@ namespace docspeak {
             unsigned int m_id = 0;
             static size_t s_number_of_items;
         public:
-            Item(){m_id = ++s_number_of_items;}
+            Item(){m_id = ++s_number_of_items; PLOGV << std::format("New Item. id = {}", m_id);}
 
             inline void set_id(unsigned int id) {m_id = id;}
             inline unsigned int get_id() const {return m_id;}
