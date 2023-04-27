@@ -2,44 +2,18 @@
 
 using namespace docspeak;
 
-Patient::Patient(const std::string& first_name,const std::string& last_name, char sex,  const Insurance& health_insurance, const std::string& insurance_number) : Person(Person::PATIENT, first_name, last_name, sex), m_health_insurance(health_insurance), m_insurance_number(insurance_number)
+Patient::Patient(const std::string& first_name,const std::string& last_name, const std::string& sex,  const Insurance& health_insurance, const std::string& insurance_number, const std::string status,  const std::chrono::year_month_day& birth_date) : 
+    Person(Person::PATIENT, first_name, last_name, sex, birth_date), m_health_insurance(health_insurance), m_insurance_number(insurance_number), m_status(status)
 {
     
 }
 
-std::shared_ptr<Patient> docspeak::PATIENT(const std::string& first_name, const std::string& last_name, char sex, const Insurance& health_insurance, const std::string& insurance_number) {
-    auto patient = std::shared_ptr<Patient>(new Patient(first_name, last_name, sex, health_insurance, insurance_number));
+std::shared_ptr<Patient> docspeak::PATIENT(const std::string& first_name, const std::string& last_name, const std::string& sex, const Insurance& health_insurance, const std::string& insurance_number, const std::string status, const std::chrono::year_month_day& birth_date) {
+    auto patient = std::shared_ptr<Patient>(new Patient(first_name, last_name, sex, health_insurance, insurance_number, status, birth_date));
 
-    auto book = Book<Patient>::get_book();
+    PatientBook::add(patient);
 
-    if (auto book_observer = book.lock()){
-        book_observer -> add(patient);
-
-        return patient;
-    } else {
-        auto msg = std::format("The patient book cannot be accessed");
-        throw std::invalid_argument(msg);
-    }
-}
-
-std::shared_ptr<Record> docspeak::RECORD (std::time_t timestamp, std::shared_ptr<Patient> patient, std::shared_ptr<Doctor> doctor) {
-    std::shared_ptr<Record> record (new Record(timestamp));
-
-    if (doctor)
-        record -> set_doctor(doctor);
-
-    patient -> add_record(record);
-    
-    auto book = Book<Record>::get_book();
-
-    if (auto book_observer = book.lock()){
-        book_observer -> add(record);
-        return record;
-    } else {
-        auto msg = std::format("The book cannot be accessed");
-        throw std::invalid_argument(msg);
-    }
-
+    return patient;
 }
 
 Patient::~Patient()
@@ -55,8 +29,11 @@ void Patient::_load() {
 }
 
 template<>
-void Book<Patient>::add(std::shared_ptr<Patient> element) {
-    for (auto p : m_elements) {
+void PatientBook::add(std::shared_ptr<Patient> element) {
+    if (!s_instance)
+        s_instance = std::shared_ptr<Book>(new PatientBook);
+
+    for (auto p : s_instance -> m_elements) {
         if (p->get_first_name() == element->get_first_name() && p->get_last_name() == element->get_last_name()) {
             auto msg = std::format("{} {} {} already added.", p->get_type_string(), p->get_first_name(), p->get_last_name());
             throw std::invalid_argument (msg.c_str()) ;
@@ -68,10 +45,10 @@ void Book<Patient>::add(std::shared_ptr<Patient> element) {
         }
     }
 
-    m_elements.push_back(std::move(element));
+    s_instance -> m_elements.push_back(std::move(element));
 }
 
-bool Patient::is_like(const Patient& patient) {
+bool Patient::is_like(const Patient& patient) const {
     if (Person::is_like(patient))
         return true;
 
@@ -80,13 +57,5 @@ bool Patient::is_like(const Patient& patient) {
 }
 
 void Patient::add_record(std::shared_ptr<Record> record) {
-    for (auto r : m_records) {
-        if (r.lock() -> get_timestamp() == record -> get_timestamp()) {
-            auto msg = std::format("Record already added. Timestamp {}", record -> get_timestamp());
-            throw std::invalid_argument (msg.c_str()) ;
-        }
-    }
-
     m_records.push_back(std::weak_ptr(record));
-
 }

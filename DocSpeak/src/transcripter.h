@@ -6,7 +6,8 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <set>
+#include <array>
+#include <chrono>
 
 namespace docspeak {
     class Transcripter
