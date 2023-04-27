@@ -30,41 +30,38 @@ protected:
         patient1 = PATIENT("Patient1", "BisBi1", "f", insurance1, "52345", "180", std::chrono::July / 11 / 1991);
 
         Prescription::s_template_pdf_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\prescription.pdf";
+        Prescription::set_output_folder(std::filesystem::current_path() / ".\\output\\");
         Prescription::s_assets_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\";
         Prescription::s_font_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\arial.ttf";
 
         auto width = 400, heigth = 280;
-        Prescription::s_templates.push_back(
-            {
-                {"cost_bearer", TemplateElement(Prescription::PrescriptionElement::COST_BEARER, width/16 + 10, heigth - 15, "cost_bearer", 8)},
-                {"patient_name", TemplateElement(Prescription::PrescriptionElement::PATIENT_NAME, width/16 + 10, heigth - 60, "patient_name", 8)},
-                {"patient_birth_date", TemplateElement(Prescription::PrescriptionElement::PATIENT_BIRTH_DATE, width/16 + 10 + 170, heigth - 60, "patient_birth_date", 8)},
-                {"insurance_number", TemplateElement(Prescription::PrescriptionElement::INSURANCE_NUMBER, width/16 + 10, heigth - 100, "insurance_number", 8)},
-                {"patient_number", TemplateElement(Prescription::PrescriptionElement::PATIENT_NUMBER, width/16 + 10 + 75, heigth - 100, "patient_status", 8)},
-                {"patient_status", TemplateElement(Prescription::PrescriptionElement::PATIENT_STATUS, width/16 + 10 + 170, heigth - 100, "patient_number", 8)},
-                {"doctor_number", TemplateElement(Prescription::PrescriptionElement::DOCTOR_NUMBER, width/16 + 10 + 75, heigth - 125, "doctor_number", 8)},
-                {"house_number", TemplateElement(Prescription::PrescriptionElement::HOUSE_NUMBER, width/16 + 10, heigth - 125, "house_number", 8)},
-                {"date", TemplateElement(Prescription::PrescriptionElement::DATE, width/16 + 10 + 170, heigth - 125, "date", 8)},
-                {"medication_1", TemplateElement(Prescription::PrescriptionElement::MEDICATION_1, width/16 + 10, heigth/2 - 22, "medication_1", 8)},
-                {"medication_2", TemplateElement(Prescription::PrescriptionElement::MEDICATION_2, width/16 + 10, heigth/2 - 45, "medication_2", 8)},
-                {"medication_3", TemplateElement(Prescription::PrescriptionElement::MEDICATION_3, width/16 + 10, heigth/2 - 68, "medication_3", 8)},
-                {"med_auf_idem_1", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_1, 10, heigth/2 - 22, "X", 10)},
-                {"med_auf_idem_2", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_2, 10, heigth/2 - 45, "X", 10)},
-                {"med_auf_idem_3", TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_3, 10, heigth/2 - 68, "X", 10)},
-                {"charge_type_free", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_FREE, 10,  heigth - 20, "X", 10)},
-                {"charge_type_apply", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_APPLY, 10, heigth - 35, "X", 10)},
-                {"charge_type_nigth", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_NIGTH, 10, heigth - 55, "X", 10)},
-                {"charge_type_others", TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_OTHERS, 10,heigth - 80, "X", 10)},
-                {"accident", TemplateElement(Prescription::PrescriptionElement::ACCIDENT, 10, heigth - 105  , "X", 10)},
-                {"accident_work", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_WORK, 10, heigth - 130, "X", 10)},
-                {"accident_employer", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_EMPLOYER, 10 + 75, 17, "accident_employer", 8)},
-                {"accident_date", TemplateElement(Prescription::PrescriptionElement::ACCIDENT_DATE, 12, 17, "accident_date", 8)},
-                {"stamp", TemplateElement(Prescription::PrescriptionElement::STAMP, (3*width)/4 + 50 , heigth/2 - 5, "path", 50, TemplateElement::Type::Image, 50)},
-                {"doctor_signature", TemplateElement(Prescription::PrescriptionElement::DOCTOR_SIGNATURE, (3*width)/4 + 50 , heigth/2 - 50, "path", 200, TemplateElement::Type::Image, 10)}
-            }
-        );
+        auto [index, prescription_template] = Prescription::new_template();
+        prescription_template["cost_bearer"] = TemplateElement(Prescription::PrescriptionElement::COST_BEARER, width/16 + 10, heigth - 15, "cost_bearer", 8);
+        prescription_template["patient_name"] = TemplateElement(Prescription::PrescriptionElement::PATIENT_NAME, width/16 + 10, heigth - 60, "patient_name", 8);
+        prescription_template["patient_birth_date"] = TemplateElement(Prescription::PrescriptionElement::PATIENT_BIRTH_DATE, width/16 + 10 + 170, heigth - 60, "patient_birth_date", 8);
+        prescription_template["insurance_number"] = TemplateElement(Prescription::PrescriptionElement::INSURANCE_NUMBER, width/16 + 10, heigth - 100, "insurance_number", 8);
+        prescription_template["patient_number"] = TemplateElement(Prescription::PrescriptionElement::PATIENT_NUMBER, width/16 + 10 + 75, heigth - 100, "patient_status", 8);
+        prescription_template["patient_status"] = TemplateElement(Prescription::PrescriptionElement::PATIENT_STATUS, width/16 + 10 + 170, heigth - 100, "patient_number", 8);
+        prescription_template["doctor_number"] = TemplateElement(Prescription::PrescriptionElement::DOCTOR_NUMBER, width/16 + 10 + 75, heigth - 125, "doctor_number", 8);
+        prescription_template["house_number"] = TemplateElement(Prescription::PrescriptionElement::HOUSE_NUMBER, width/16 + 10, heigth - 125, "house_number", 8);
+        prescription_template["date"] = TemplateElement(Prescription::PrescriptionElement::DATE, width/16 + 10 + 170, heigth - 125, "date", 8);
+        prescription_template["medication_1"] = TemplateElement(Prescription::PrescriptionElement::MEDICATION_1, width/16 + 10, heigth/2 - 22, "medication_1", 8);
+        prescription_template["medication_2"] = TemplateElement(Prescription::PrescriptionElement::MEDICATION_2, width/16 + 10, heigth/2 - 45, "medication_2", 8);
+        prescription_template["medication_3"] = TemplateElement(Prescription::PrescriptionElement::MEDICATION_3, width/16 + 10, heigth/2 - 68, "medication_3", 8);
+        prescription_template["med_auf_idem_1"] = TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_1, 10, heigth/2 - 22, "X", 10);
+        prescription_template["med_auf_idem_2"] = TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_2, 10, heigth/2 - 45, "X", 10);
+        prescription_template["med_auf_idem_3"] = TemplateElement(Prescription::PrescriptionElement::MED_AUF_IDEM_3, 10, heigth/2 - 68, "X", 10);
+        prescription_template["charge_type_free"] = TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_FREE, 10,  heigth - 20, "X", 10);
+        prescription_template["charge_type_apply"] = TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_APPLY, 10, heigth - 35, "X", 10);
+        prescription_template["charge_type_nigth"] = TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_NIGTH, 10, heigth - 55, "X", 10);
+        prescription_template["charge_type_others"] = TemplateElement(Prescription::PrescriptionElement::CHARGE_TYPE_OTHERS, 10,heigth - 80, "X", 10);
+        prescription_template["accident"] = TemplateElement(Prescription::PrescriptionElement::ACCIDENT, 10, heigth - 105  , "X", 10);
+        prescription_template["accident_work"] = TemplateElement(Prescription::PrescriptionElement::ACCIDENT_WORK, 10, heigth - 130, "X", 10);
+        prescription_template["accident_employer"] = TemplateElement(Prescription::PrescriptionElement::ACCIDENT_EMPLOYER, 10 + 75, 17, "accident_employer", 8);
+        prescription_template["accident_date"] = TemplateElement(Prescription::PrescriptionElement::ACCIDENT_DATE, 12, 17, "accident_date", 8);
+        prescription_template["stamp"] = TemplateElement(Prescription::PrescriptionElement::STAMP, (3*width)/4 + 50 , heigth/2 - 5, "path", 50, TemplateElement::Type::Image, 50);
+        prescription_template["doctor_signature"] = TemplateElement(Prescription::PrescriptionElement::DOCTOR_SIGNATURE, (3*width)/4 + 50 , heigth/2 - 50, "path", 200, TemplateElement::Type::Image, 10);
 
-        Prescription::s_current_template_index = 1;
     }
 
     void TearDown() override {

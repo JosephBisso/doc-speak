@@ -12,7 +12,7 @@ Summary::~Summary()
 
 Printer::StatusInfo Summary::print() {
     auto& printer = *get_printer();
-    auto file_name = std::format("report_{}_Patient{}.pdf", m_date, m_patient_number);
+    auto file_name = std::format("report_{}_{}_Patient{}.pdf", m_date, get_id() ,m_patient_number);
     auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
         return Printer::StatusInfo(false, output_set.error_message);
@@ -78,6 +78,7 @@ std::vector<std::map<std::string, TemplateElement>> Protocol<Summary>::s_templat
         {"patient_number", TemplateElement(Summary::SummaryElement::PATIENT_NUMBER, 400/16 + 10 + 75, 280 - 125, "patient_number", 8)},
         {"date", TemplateElement(Summary::SummaryElement::DATE, 400/16 + 10 + 170, 280 - 125, "date", 8)},
         {"stamp", TemplateElement(Summary::SummaryElement::STAMP, (3*400)/4 + 50 , 280/2 - 5, "path", 50, TemplateElement::Type::Image, 50)},
-        {"doctor_signature", TemplateElement(Summary::SummaryElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10)}
+        {"doctor_signature", TemplateElement(Summary::SummaryElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10)},
+        {"page_dimensions", TemplateElement(400, 280)}
     }
 };

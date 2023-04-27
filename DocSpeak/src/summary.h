@@ -2,10 +2,11 @@
 #define SUMMARY_H
 
 #include "protocol.h"
+#include "serializable.h"
 
 namespace docspeak
 {
-    class Summary: public Protocol<Summary>
+    class Summary: public Protocol<Summary>, public Item<Summary>
     {
     public:
         enum SummaryElement {
@@ -30,13 +31,13 @@ namespace docspeak
         Summary(/* args */);
         ~Summary();
 
-        inline void add_reason_of_consultation(const std::string& reason) {m_reason_of_consultation += reason;}        
+        inline void add_reason_of_consultation(const std::string& reason) {m_reason_of_consultation += "\n" + reason;}        
         inline std::string get_reason_of_consultation() {return m_reason_of_consultation;}
 
-        inline void add_diagnosis(const std::string& diagnosis) {m_diagnosis += diagnosis;}
+        inline void add_diagnosis(const std::string& diagnosis) {m_diagnosis += "\n" + diagnosis;}
         inline std::string get_diagnosisn() {return m_diagnosis;}
         
-        inline void add_findings(const std::string& finding) {m_findings += finding;}        
+        inline void add_findings(const std::string& finding) {m_findings += "\n" + finding;}        
         inline std::string get_findings() {return m_findings;}
 
         inline void add_additional_info(const std::string& info_name, const std::string& info) {m_additional_info[info_name] += info;}        
@@ -48,6 +49,8 @@ namespace docspeak
 
         Printer::StatusInfo print();
         std::string to_string();
+
+        virtual bool is_like(const Summary& other_summary) const override {return this -> equals(other_summary);};
     };
         
 } // namespace docspeak

@@ -262,13 +262,25 @@ void Printer::Text::print(AbstractContentContext* context) const {
 
     AbstractContentContext::TextOptions text_option(Printable::font, this->font_size ,AbstractContentContext::eRGB, this->color);
 
-    auto x_adjust = 0.0;
-    if (this->adjust_to_middle) {
-        auto textDimensions = Printable::font->CalculateTextDimensions(this->text,this->font_size);
-        x_adjust = (textDimensions.width / 2);
+    auto print_line = [&](const std::string& line, int y_shift = 0) {
+        auto x_adjust = 0.0;
+        if (this->adjust_to_middle) {
+            auto textDimensions = Printable::font->CalculateTextDimensions(line,this->font_size);
+            x_adjust = (textDimensions.width / 2);
+        }
+        
+        context -> WriteText(this->x - x_adjust, this->y + y_shift, line, text_option);
+    };
+
+    if (this->text.find('\n') != std::string::npos){
+        auto all_lines = docspeak::split(this->text, '\n');
+        for(size_t i = 0; i < all_lines.size(); i++)
+            print_line(all_lines[i], this->font_size * i);
+
+    } else {
+        print_line(this->text);
     }
-    
-    context -> WriteText(this->x - x_adjust, this->y, this->text, text_option);
+
 }
 
 void Printer::Image::print(AbstractContentContext* context) const {
@@ -282,4 +294,14 @@ void Printer::Image::print(AbstractContentContext* context) const {
     image_option.boundingBoxWidth = this->width;
     image_option.boundingBoxHeight = this->heigth;
     context->DrawImage(this->x,this->y - this->heigth ,this->src_path.string(), image_option);
+}
+
+std::vector<std::string> docspeak::split(std::string to_split, const char& delimiter) {
+    std::vector<std::string> all_strings;
+    std::istringstream stream(to_split);
+    std::string splited;    
+    while (getline(stream, splited, delimiter)) 
+        all_strings.push_back(splited);
+    
+    return all_strings;
 }

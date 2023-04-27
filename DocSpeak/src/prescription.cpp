@@ -24,7 +24,7 @@ void Prescription::add_medication(const std::string& medication) {
 
 Printer::StatusInfo Prescription::print() {
     auto& printer = *get_printer();
-    auto file_name = std::format("prescription_{}_{}.pdf", m_record_info.date, get_id());
+    auto file_name = std::format("prescription_{}_{}_Patient{}.pdf", get_id(), m_record_info.date, m_record_info.patient_number);
     auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
         return Printer::StatusInfo(false, output_set.error_message);

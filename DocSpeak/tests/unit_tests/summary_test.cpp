@@ -28,20 +28,20 @@ protected:
 
         Summary::s_template_pdf_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\report.pdf";
         Summary::s_assets_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\";
+        Summary::set_output_folder(std::filesystem::current_path() / ".\\output\\");
         Summary::s_font_path = std::filesystem::current_path() / "..\\DocSpeak\\tests\\assets\\arial.ttf";
 
         auto new_template = Summary::new_template();
-        new_template.second["reason_of_consultation"] = TemplateElement(Summary::SummaryElement::REASON_OF_CONSULTATION, 400/16 + 10 + 75, 280 - 125, "reason_of_consultation", 8);
-        new_template.second["diagnosis"] = TemplateElement(Summary::SummaryElement::DIAGNOSIS, 400/16 + 10 + 75, 280 - 125, "diagnosis", 8);
-        new_template.second["findings"] = TemplateElement(Summary::SummaryElement::FINDINGS, 400/16 + 10 + 75, 280 - 125, "findings", 8);
+        auto width = 538.56 / 2, heigth = 792.0/2;
+        new_template.second["reason_of_consultation"] = TemplateElement(Summary::SummaryElement::REASON_OF_CONSULTATION, 10, heigth/2 - 50, "reason_of_consultation", 10);
+        new_template.second["diagnosis"] = TemplateElement(Summary::SummaryElement::DIAGNOSIS, 10, 7*heigth/8 - 10 , "diagnosis", 10);
+        new_template.second["findings"] = TemplateElement(Summary::SummaryElement::FINDINGS, 10, 7*heigth/8 - 50, "findings", 10);
         new_template.second["doctor_number"] = TemplateElement(Summary::SummaryElement::DOCTOR_NUMBER, 400/16 + 10 + 75, 280 - 125, "doctor_number", 8);
         new_template.second["patient_number"] = TemplateElement(Summary::SummaryElement::PATIENT_NUMBER, 400/16 + 10 + 75, 280 - 125, "patient_number", 8);
-        new_template.second["date"] = TemplateElement(Summary::SummaryElement::DATE, 400/16 + 10 + 170, 280 - 125, "date", 8);
-        new_template.second["stamp"] = TemplateElement(Summary::SummaryElement::STAMP, (3*400)/4 + 50 , 280/2 - 5, "path", 50, TemplateElement::Type::Image, 50);
+        new_template.second["date"] = TemplateElement(Summary::SummaryElement::DATE, width/2, 7*heigth/8, "date", 10);
+        new_template.second["stamp"] = TemplateElement(Summary::SummaryElement::STAMP, (3*width)/4 , 100, "path", 75, TemplateElement::Type::Image, 75);
         new_template.second["doctor_signature"] = TemplateElement(Summary::SummaryElement::DOCTOR_SIGNATURE, (3*400)/4 + 50 , 280/2 - 50, "path", 200, TemplateElement::Type::Image, 10);
-        new_template.second["page_dimensions"] = TemplateElement(400, 280);
-
-        Summary::s_current_template_index = new_template.first;
+        new_template.second["page_dimensions"] = TemplateElement(197, 280);
     }
 
     void TearDown() override {

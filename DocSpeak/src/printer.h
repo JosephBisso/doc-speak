@@ -53,7 +53,7 @@ namespace docspeak {
         class Text: public Printable 
         {
         public:
-            size_t font_size;
+            size_t font_size, max_width;
             long int color;
             std::string text;
             bool adjust_to_middle;
@@ -118,6 +118,8 @@ namespace docspeak {
         StatusInfo __check_path(const std::filesystem::path& path, bool strict = false);
         bool __check_if_ready();
     };
+
+    std::vector<std::string> split(std::string to_split, const char& delimiter = ';');
     
 }
 
