@@ -18,6 +18,8 @@ link_libraries(
   doc_speak
 )
 
+set(MAIN_CPP ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
 FILE(GLOB all_test_types RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
   SET(all_tests "")
 
@@ -41,6 +43,7 @@ FOREACH(test_type ${all_test_types})
 
     add_executable(
       ${test_type}
+      ${MAIN_CPP}
       ${all_test_files}
     )
 
@@ -53,6 +56,7 @@ FOREACH(test_type ${all_test_types})
 
       add_executable(
         ${test}
+        ${MAIN_CPP}
         ${test_file}
       )
 

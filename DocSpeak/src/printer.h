@@ -8,6 +8,8 @@
 #include <ctime>
 #include <memory>
 
+#include <plog/Log.h>
+
 #include <PDFWriter.h>
 #include <PDFPage.h>
 #include <PDFModifiedPage.h>
