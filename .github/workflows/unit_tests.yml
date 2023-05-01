@@ -18,7 +18,17 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-
+          
+      - name: Download DeepSpeech model
+        uses: wei/wget@v1
+        with:
+          args: -O .\lib\DeepSpeech\deepspeech-0.9.3-models.pbmm https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.pbmm
+          
+      - name: Download DeepSpeech scorer
+        uses: wei/wget@v1
+        with:
+          args: -O .\lib\DeepSpeech\deepspeech-0.9.3-models.scorer https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.scorer
+            
       - name: Build the tests
         shell: pwsh
         run: |
