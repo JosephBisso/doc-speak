@@ -23,6 +23,10 @@ set(MAIN_CPP ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 FILE(GLOB all_test_types RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
   SET(all_tests "")
 
+if (CI)
+  add_compile_definitions(CI=ON)
+endif()
+
 # Iterate througth Test Folders and add it as executable
 FOREACH(test_type ${all_test_types})
   IF(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${test_type})

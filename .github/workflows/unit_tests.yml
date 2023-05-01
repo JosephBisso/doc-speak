@@ -70,10 +70,11 @@ jobs:
           
       - name: Run the Tests
         run:  |
-          dir -File -Recurse
+          # dir -File -Recurse #For Debug
           .\test.ps1 --run-tests
           
       - name: Upload Test Log
+        if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: test_log
