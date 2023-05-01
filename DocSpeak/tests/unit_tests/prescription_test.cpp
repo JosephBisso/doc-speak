@@ -149,24 +149,55 @@ TEST_F(PrescriptionTest, PrescriptionPDFTemplate) {
 
 }
 
-TEST_F(PrescriptionTest, PrintPrescriptionToPDF) {
+TEST_F(PrescriptionTest, TranscriptPrescriptionAndPrintToPDF) {
     auto now = std::chrono::system_clock::now();
     auto timestamp = std::chrono::system_clock::to_time_t(now);
     auto record = RECORD(timestamp, patient1);
 
-    auto prescription = PRESCRIPTION(medication1, record);
+    auto prescription = PRESCRIPTION(record);
 
-    (*prescription) << medication2;
-        
-    EXPECT_EQ(RecordBook::size(), 1); 
-    EXPECT_EQ(PrescriptionBook::size(), 1); 
+    auto transcription_status = prescription->transcript();
 
-    EXPECT_EQ(prescription -> get_num_of_medications(), 2); 
+    EXPECT_TRUE(transcription_status.success);
 
-    prescription -> set_auf_idem(2);
+    auto streamed_medication = prescription -> get_medications();
+    auto all_transcriptions = prescription -> get_transcripter() -> get_transcription();
+
+
+    if (
+        std::count_if(all_transcriptions.begin(), all_transcriptions.end(),
+        [](auto t){return !t.empty();}) 
+        > 0
+    ) {
+
+        EXPECT_GT(streamed_medication.size(), 0);
+
+        prescription -> set_auf_idem(1);
+
+        if (streamed_medication.size() < 3) {
+
+            bool all_transcripted_words_present = std::all_of(all_transcriptions.begin(), all_transcriptions.end(), 
+                        [&streamed_medication](auto transcripted_word) {
+                        
+                        if (transcripted_word.empty() || transcripted_word.find("next") != std::string::npos || transcripted_word.find("|end|") != std::string::npos)
+                            return true;
+                            
+                        return std::find_if(streamed_medication.begin(), streamed_medication.end(),
+                                        [&transcripted_word](auto medication) {return medication.find(transcripted_word) != std::string::npos;}
+                                ) != streamed_medication.end();
+            });
+            
+            EXPECT_TRUE(all_transcripted_words_present);
+        }
+
+    }
+
     prescription -> set_cost_bearer(patient1->get_health_insurance().name);
+    prescription -> set_house_number ("01234");
+    prescription -> charge_type() = Prescription::Apply;
 
     auto print_status = prescription -> print();
+
     EXPECT_TRUE(print_status.success); 
 
 }

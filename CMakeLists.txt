@@ -15,4 +15,5 @@ cmake_policy(SET CMP0135 NEW)
 set(LIB_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib/)
 set(DOCSPEACK_SRC ${CMAKE_CURRENT_SOURCE_DIR}/DocSpeak/src)
 
+add_subdirectory(lib)
 add_subdirectory(DocSpeak)

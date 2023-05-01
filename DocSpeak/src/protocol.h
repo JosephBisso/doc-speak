@@ -61,20 +61,25 @@ namespace docspeak
         }
 
     public:
-        Protocol(): m_printer(new Printer) {
+        Protocol(): m_printer(new Printer), m_transcripter(new Transcripter) {
             __init();
         }
 
         Protocol(const std::filesystem::path& template_pdf_path,const std::filesystem::path& font_path):
-            m_template_pdf_path(template_pdf_path), s_font_path(font_path), m_printer(new Printer)
+            m_template_pdf_path(template_pdf_path), s_font_path(font_path), m_printer(new Printer), m_transcripter(new Transcripter)
         {
             __init();            
         }
 
         ~Protocol() {}
 
-        Printer::StatusInfo print() {m_printer.print();};
+        StatusInfo print() {return m_printer.print();};
+        StatusInfo transcript() {return m_transcripter.transcript();}
         std::string to_string() {return "Empty Protocoll";};
+
+        constexpr std::shared_ptr<Printer> get_printer() {return m_printer;}
+        constexpr std::shared_ptr<Transcripter> get_transcripter() {return m_transcripter;}
+
 
         inline std::filesystem::path& get_output_folder() {return m_output_folder.empty() ? s_output_folder : m_output_folder;}
         void set_specific_output_folder(const std::filesystem::path& output_folder) {
@@ -145,8 +150,6 @@ namespace docspeak
 
         constexpr Template get_current_template()  {return s_templates.at(get_current_template_index());}
         constexpr size_t get_current_template_index()  {return m_current_template_index = -1 ? s_current_template_index : m_current_template_index;}
-
-        constexpr std::shared_ptr<Printer> get_printer() {return m_printer;}
 
         void set_template_pdf_path(const std::filesystem::path template_pdf_path) {
             if (auto result = m_printer -> set_input_path(template_pdf_path); result.success)

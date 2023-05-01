@@ -13,18 +13,24 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
       - name: Build the tests
         shell: pwsh
         run: |
           .\build.ps1 --build-only
+
       # Upload the build artifacts for the next job
       - name: Upload Build Bin Artifact
         uses: actions/upload-artifact@v2
         with:
           name: build_bin
           path: .\build\bin\
+
       - name: Upload Test Assets Artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -44,15 +50,18 @@ jobs:
         with:
           name: build_bin
           path: .\build\bin\
+
       - name: Download Test Assets artifacts
         uses: actions/download-artifact@v2
         with:
           name: test_assets
           path: .\build\DocSpeak\tests
+
       - name: Run the Tests
         run: |
           cd build/bin
           . .\unit_tests.exe --gtest_output=xml
+          
       - name: Upload Test Details
         uses: actions/upload-artifact@v2
         with:

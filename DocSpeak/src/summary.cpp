@@ -10,12 +10,12 @@ Summary::~Summary()
 {
 }
 
-Printer::StatusInfo Summary::print() {
+StatusInfo Summary::print() {
     auto& printer = *get_printer();
     auto file_name = std::format("report_{}_{}_Patient{}.pdf", m_date, get_id() ,m_patient_number);
     auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
-        return Printer::StatusInfo(false, output_set.error_message);
+        return StatusInfo(false, output_set.error_message);
     }
 
 

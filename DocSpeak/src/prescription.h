@@ -74,8 +74,10 @@ namespace docspeak
                         date;
         } m_record_info;
 
+        static std::string s_medication_stream;
+
     public:
-        explicit Prescription(const std::string& medication);
+        explicit Prescription(const std::string& medication = "");
         ~Prescription();
 
         void add_medication(const std::string& medication);
@@ -100,8 +102,11 @@ namespace docspeak
 
         bool contains(const std::string& medication) const;
         
-        Printer::StatusInfo print();
+        StatusInfo print();
+        StatusInfo transcript();
         std::string to_string();
+
+        static void add_medication_stream(Prescription* prescription, std::string medication);
 
         virtual bool is_like (const Prescription& prescription) const override;
 
@@ -110,6 +115,7 @@ namespace docspeak
     typedef Book<Prescription> PrescriptionBook;
 
     std::shared_ptr<Prescription> PRESCRIPTION (const std::string& medication, std::shared_ptr<Record> record);
+    inline std::shared_ptr<Prescription> PRESCRIPTION (std::shared_ptr<Record> record) {return PRESCRIPTION("", record);}
 
 
 } // namespace docspeak

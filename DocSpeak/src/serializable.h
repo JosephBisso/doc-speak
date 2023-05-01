@@ -55,7 +55,7 @@ namespace docspeak {
 
         std::vector<std::shared_ptr<T>> m_elements;
 
-        static std::shared_ptr<Book<T, U>> s_instance;
+        static std::unique_ptr<Book<T, U>> s_instance;
     public:
         Book(){};
         ~Book() {};
@@ -70,16 +70,16 @@ namespace docspeak {
 
         // static std::weak_ptr<Book<T, U>> get_instance() {return s_instance;}
 
-        static std::weak_ptr<Book<T, U>> get_book() {
-            if (!s_instance) 
-                s_instance = std::shared_ptr<Book>(new Book<T,U>);
+        // static std::weak_ptr<Book<T, U>> get_book() {
+        //     if (!s_instance) 
+        //         s_instance = std::shared_ptr<Book>(new Book<T,U>);
             
-            return s_instance;
-        }
+        //     return s_instance;
+        // }
 
         static void init_book() {
             if (!s_instance) 
-                s_instance = std::shared_ptr<Book>(new Book<T,U>);
+                s_instance = std::unique_ptr<Book>(new Book<T,U>);
         }
 
         static void clear_book() {
