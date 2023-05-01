@@ -51,12 +51,6 @@ jobs:
     needs: build
     steps:
       # Download the build artifacts from the previous job
-      - name: Download test script artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: test_script
-          path: .\test.ps1
-
       - name: Download Build Bin artifacts
         uses: actions/download-artifact@v2
         with:
@@ -69,8 +63,15 @@ jobs:
           name: test_assets
           path: .\build\DocSpeak\tests
 
+      - name: Download test script artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: test_script
+          
       - name: Run the Tests
-        run:  .\test.ps1 --run-tests
+        run:  |
+          dir -File -Recurse
+          .\test.ps1 --run-tests
           
       - name: Upload Test Log
         uses: actions/upload-artifact@v2
