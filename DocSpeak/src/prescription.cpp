@@ -2,8 +2,12 @@
 
 using namespace docspeak;
 
+std::string Prescription::s_medication_stream;
+
 Prescription::Prescription(const std::string& medication): Protocol()
 {
+    if (medication.empty()) return;
+    
    m_medications[m_num_of_medications++] = medication;
 }
 
@@ -12,7 +16,11 @@ Prescription::~Prescription()
 }
 
 void Prescription::add_medication(const std::string& medication) {
+    if (medication.empty())
+        return;
+        
     if (m_num_of_medications < 3) {
+        PLOGD << std::format("New medication: {}", medication);
         m_medications[m_num_of_medications++] = medication;
         return;
     }
@@ -23,13 +31,13 @@ void Prescription::add_medication(const std::string& medication) {
 }
 
 
-Printer::StatusInfo Prescription::print() {
+StatusInfo Prescription::print() {
     auto& printer = *get_printer();
     auto file_name = std::format("prescription_{}_{}_Patient{}.pdf", get_id(), m_record_info.date, m_record_info.patient_number);
     auto output_set = printer.set_output_path(get_output_folder()/file_name);
     if (!output_set.success) {
         PLOGW << std::format("Print Aborted. reason: {}", output_set.error_message);
-        return Printer::StatusInfo(false, output_set.error_message);
+        return StatusInfo(false, output_set.error_message);
     }
 
 
@@ -138,6 +146,35 @@ Printer::StatusInfo Prescription::print() {
 
 }
 
+void Prescription::add_medication_stream(Prescription* prescription, std::string medication)
+{
+    if (medication.empty()) return;
+
+    s_medication_stream += " " + medication;
+
+    if (medication.find("next") != std::string::npos || medication.find("|end|") != std::string::npos) {
+
+        if (s_medication_stream.find("|end|") != std::string::npos)
+            s_medication_stream.erase(s_medication_stream.find("|end|"));
+        while (s_medication_stream.find("next") != std::string::npos) 
+            s_medication_stream.erase(s_medication_stream.find("next"));
+        
+
+        try {
+            prescription -> add_medication(s_medication_stream);
+            s_medication_stream.clear();
+        } catch (const std::invalid_argument& ia) {
+            PLOGW << std::format("Dropping {}, reason: {}", s_medication_stream, ia.what());
+        }
+    } 
+    
+}
+StatusInfo Prescription::transcript() {
+    auto transcripter = get_transcripter();
+    return transcripter -> transcript<Prescription>(true, this, Prescription::add_medication_stream);
+}
+
+
 std::string Prescription::to_string() {
     std::string result;
     std::for_each(m_medications.begin(), m_medications.end(), [&result](auto medication) {
@@ -163,7 +200,7 @@ bool Prescription::contains(const std::string& medication) const{
 template<>
 void Book<Prescription>::add(std::shared_ptr<Prescription> element) {
     if (!s_instance)
-        s_instance = std::shared_ptr<Book>(new PrescriptionBook);
+        init_book();
 
     if (element -> get_medications().size() == 0) {
         auto msg = std::format("A Prescription must contain at least one medication");

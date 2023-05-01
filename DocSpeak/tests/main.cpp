@@ -7,6 +7,8 @@ int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
 
   plog::init(plog::verbose, "docspeak.log");
+  PLOGI << "\n\n";
+  PLOGI << "################################### DocSpeak Start ###################################";
 
   return RUN_ALL_TESTS();
 }

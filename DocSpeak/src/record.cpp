@@ -16,7 +16,7 @@ std::string Record::s_date_format = "%d-%m-%Y";
 template<>
 void Book<Record>::add(std::shared_ptr<Record> element) {
     if (!s_instance)
-        s_instance = std::shared_ptr<Book>(new RecordBook);
+        init_book();
 
     for (auto el : s_instance -> m_elements) {
         if (auto tp = el->get_timestamp(); tp == element->get_timestamp()) {

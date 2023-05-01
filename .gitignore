@@ -30,6 +30,10 @@
 *.a
 *.lib
 
+# deepspeech
+*.pbmm
+*.scorer
+
 # Executables
 *.exe
 *.out

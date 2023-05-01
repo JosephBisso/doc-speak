@@ -19,7 +19,7 @@ Person::~Person()
 template<>
 void PersonBook::add(std::shared_ptr<Person> element) {
     if (!s_instance)
-        s_instance = std::shared_ptr<Book>(new PersonBook);
+        init_book();
 
     for (auto p : s_instance->m_elements) {
         if (p->get_first_name() == element->get_first_name() && p->get_last_name() == element->get_last_name()) {

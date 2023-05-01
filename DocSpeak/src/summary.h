@@ -47,7 +47,7 @@ namespace docspeak
         inline void set_patient_number(std::string patient_number) {m_patient_number = patient_number;}
         inline void set_date(std::string date) {m_date = date;}
 
-        Printer::StatusInfo print();
+        StatusInfo print();
         std::string to_string();
 
         virtual bool is_like(const Summary& other_summary) const override {return this -> equals(other_summary);};

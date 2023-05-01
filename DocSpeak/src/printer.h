@@ -20,16 +20,17 @@
 #include <UnicodeString.h>
 
 namespace docspeak {
+    struct [[nodiscard]] StatusInfo {
+        bool success = false;
+        std::string error_message = "";
+        explicit StatusInfo(bool status, std::string message=""): success(status) {
+            error_message = success ? "No Error" : message;
+        }
+    };
+    
     class Printer
     {
     public:
-        struct [[nodiscard]] StatusInfo {
-            bool success = false;
-            std::string error_message = "";
-            explicit StatusInfo(bool status, std::string message=""): success(status) {
-                error_message = success ? "No Error" : message;
-            }
-        };
 
         enum PDFPosition {
             padding = 75,

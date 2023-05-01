@@ -24,7 +24,7 @@ Printer::~Printer()
 {
 }
 
-Printer::StatusInfo Printer::__check_path(const std::filesystem::path& path, bool strict) {
+StatusInfo Printer::__check_path(const std::filesystem::path& path, bool strict) {
     if (std::filesystem::exists(path)) {
         return StatusInfo(true);
     }
@@ -68,7 +68,7 @@ bool Printer::check_all() {
     return m_printer_ready;
 }
 
-Printer::StatusInfo Printer::set_input_path(const std::filesystem::path& path) {
+StatusInfo Printer::set_input_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
     if (!check_status.success) {
         PLOGW << std::format("Cannot set input path because given path is invalid: {}", path.string());
@@ -81,7 +81,7 @@ Printer::StatusInfo Printer::set_input_path(const std::filesystem::path& path) {
     return StatusInfo(true);
 } 
 
-Printer::StatusInfo Printer::set_font_path(const std::filesystem::path& path) {
+StatusInfo Printer::set_font_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
     if (!check_status.success){
         PLOGW << std::format("Cannot set font path because given path is invalid: {}", path.string());
@@ -94,7 +94,7 @@ Printer::StatusInfo Printer::set_font_path(const std::filesystem::path& path) {
     return StatusInfo(true);
 } 
 
-Printer::StatusInfo Printer::set_assets_folder_path(const std::filesystem::path& path) {
+StatusInfo Printer::set_assets_folder_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path, true);
     if (!check_status.success) {
         PLOGW << std::format("Cannot set assets folder path because given path is invalid: {}", path.string());
@@ -107,7 +107,7 @@ Printer::StatusInfo Printer::set_assets_folder_path(const std::filesystem::path&
     return StatusInfo(true);
 } 
 
-Printer::StatusInfo Printer::set_output_path(const std::filesystem::path& path) {
+StatusInfo Printer::set_output_path(const std::filesystem::path& path) {
     auto check_status = __check_path(path);
     if (!check_status.success) {
         PLOGW << std::format("Cannot set output path because given path is invalid: {}", path.string());
@@ -123,7 +123,7 @@ Printer::StatusInfo Printer::set_output_path(const std::filesystem::path& path) 
     return StatusInfo(true);
 } 
 
-Printer::StatusInfo Printer::print(const PrintJob& print_job) {
+StatusInfo Printer::print(const PrintJob& print_job) {
     if (!__check_if_ready()) {
         auto msg = std::string("Cannot print because printer is not ready. Specify all Paths first..");
         PLOGW << msg;
@@ -183,7 +183,7 @@ void Printer::clear_print_job() {
     m_print_job.clear();
 }
 
-Printer::StatusInfo Printer::test() {
+StatusInfo Printer::test() {
     if (!check_all()) {
         auto msg = std::string("Cannot print because printer is not ready. Specify all Paths first..");
         PLOGW << msg;
