@@ -1,13 +1,20 @@
 Function Build-Tests {
 
-    $wget = Get-Command wget.exe
+    if (Test-Path "C:\msys64\usr\bin\wget.exe") {
+        $wget = "C:\msys64\usr\bin\wget.exe"
+    } else {
+        $wget = Get-Command wget.exe
+    }
+
     if ($wget) {
         foreach($extension in "pbmm", "scorer") {
             if (!(Test-Path ".\lib\DeepSpeech\deepspeech-0.9.3-models.$extension")) {
-                Write-Host ("!! Downloading deepspeech-0.9.3-models.$extension") -ForegroundColor Cyan
-                wget "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.$extension" -O ".\lib\DeepSpeech\deepspeech-0.9.3-models.$extension"
+                Write-Host ("> Downloading deepspeech-0.9.3-models.$extension") -ForegroundColor Cyan
+                . $wget "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.$extension" -O ".\lib\DeepSpeech\deepspeech-0.9.3-models.$extension"
             }
         }
+    } else {
+        Write-Host "!! Cannot find wget. Model and Scorer have to be downloaded manually and place to '.\lib\DeepSpeech\'" -ForegroundColor Yellow
     }
 
     Write-Host "> Building..." -ForegroundColor Cyan
@@ -34,7 +41,7 @@ if ($args) {
             Build-Tests
         }
         Default {
-            Write-Host "! Unknown argument: $args" -ForegroundColor Yellow
+            Write-Host "!! Unknown argument: $args" -ForegroundColor Yellow
         }
     }
 
