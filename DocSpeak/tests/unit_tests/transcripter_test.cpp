@@ -65,7 +65,7 @@ TEST_F(TranscripterTest, RecordAudio) {
 TEST_F(TranscripterTest, TranscriptStream) {
 
 #ifdef CI
-    GTEST_SKIP()
+    GTEST_SKIP();
 #endif
     auto result = transcripter->transcript<TranscripterTest>();
 

@@ -151,7 +151,7 @@ TEST_F(PrescriptionTest, PrescriptionPDFTemplate) {
 
 TEST_F(PrescriptionTest, TranscriptPrescriptionAndPrintToPDF) {
 #ifdef CI
-    GTEST_SKIP()
+    GTEST_SKIP();
 #endif
     auto now = std::chrono::system_clock::now();
     auto timestamp = std::chrono::system_clock::to_time_t(now);
