@@ -22,7 +22,7 @@ jobs:
       - name: Build the tests
         shell: pwsh
         run: |
-          .\build.ps1 --build-only
+          .\test.ps1 --build-only
 
       # Upload the build artifacts for the next job
       - name: Upload Build Bin Artifact
@@ -58,9 +58,7 @@ jobs:
           path: .\build\DocSpeak\tests
 
       - name: Run the Tests
-        run: |
-          cd build/bin
-          . .\unit_tests.exe --gtest_output=xml
+        run:  .\test.ps1 --run-tests
           
       - name: Upload Test Log
         uses: actions/upload-artifact@v2

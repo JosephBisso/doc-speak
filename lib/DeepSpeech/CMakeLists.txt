@@ -15,14 +15,20 @@ configure_file(
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/libdeepspeech.so
 	COPYONLY
 )
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.pbmm
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/deepspeech-0.9.3-models.pbmm
-	COPYONLY
-)
-configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.scorer
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/deepspeech-0.9.3-models.scorer
-	COPYONLY
-)
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.pbmm) 
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.pbmm
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/deepspeech-0.9.3-models.pbmm
+        COPYONLY
+    )
+endif()
+
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.scorer) 
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/deepspeech-0.9.3-models.scorer
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/deepspeech-0.9.3-models.scorer
+        COPYONLY
+    )
+endif()
 
