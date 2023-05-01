@@ -64,7 +64,7 @@ TEST_F(TranscripterTest, RecordAudio) {
 
 TEST_F(TranscripterTest, TranscriptStream) {
 
-    auto result = transcripter->transcript();
+    auto result = transcripter->transcript<TranscripterTest>();
 
     EXPECT_TRUE(result.success);
 
