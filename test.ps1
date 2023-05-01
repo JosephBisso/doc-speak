@@ -13,7 +13,7 @@ Function Start-Tests {
 
     if ($wget) {
         foreach($extension in "pbmm", "scorer") {
-            if (!(Test-Path ".\lib\DeepSpeech\deepspeech-0.9.3-models.$extension")) {
+            if (!(Test-Path ".\build\bin\deepspeech-0.9.3-models.$extension")) {
                 Write-Host ("> Downloading deepspeech-0.9.3-models.$extension") -ForegroundColor Cyan
                 . $wget "https://github.com/mozilla/DeepSpeech/releases/download/v0.9.3/deepspeech-0.9.3-models.$extension" -O ".\build\bin\deepspeech-0.9.3-models.$extension" --quiet
             }

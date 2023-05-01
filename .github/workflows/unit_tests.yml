@@ -25,6 +25,12 @@ jobs:
           .\test.ps1 --build-only
 
       # Upload the build artifacts for the next job
+      - name: Upload test script
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_script
+          path: .\test.ps1
+
       - name: Upload Build Bin Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -45,6 +51,12 @@ jobs:
     needs: build
     steps:
       # Download the build artifacts from the previous job
+      - name: Download test script artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: test_script
+          path: .\test.ps1
+
       - name: Download Build Bin artifacts
         uses: actions/download-artifact@v2
         with:
