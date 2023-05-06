@@ -18,6 +18,17 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          set-env: 'true'
+          modules: 'qtcharts'
+          # tools: 'tools_ifw'
           
       - name: Build the tests
         shell: pwsh
@@ -50,6 +61,16 @@ jobs:
     # Only run this job if the previous one succeeded
     needs: build
     steps:
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: '5.15.2'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2019_64'
+          set-env: 'true'
+          modules: 'qtcharts'
+
       # Download the build artifacts from the previous job
       - name: Download Build Bin artifacts
         uses: actions/download-artifact@v2
@@ -72,9 +93,13 @@ jobs:
         run:  |
           # dir -File -Recurse #For Debug
           .\test.ps1 --run-tests
+
+      - name: Run the GUI Tests
+        if: success()
+        run:  |
+          .\test.ps1 --run-gui-tests
           
       - name: Upload Test Log
-        if: failure()
         uses: actions/upload-artifact@v2
         with:
           name: test_log
@@ -85,3 +110,6 @@ jobs:
         with:
           name: test_details
           path: .\build\bin\test_detail.xml
+
+          
+

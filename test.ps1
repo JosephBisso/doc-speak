@@ -1,7 +1,7 @@
 Function Build-Tests {
     Write-Host "> Building..." -ForegroundColor Cyan
     cmake -G Ninja -S . -B build -DCI=ON
-    cmake --build build --target unit_tests 
+    cmake --build build --target unit_tests gui_tests .\DocSpeak 
 }
 
 Function Start-Tests {
@@ -27,6 +27,12 @@ Function Start-Tests {
     . .\unit_tests.exe --gtest_output=xml
 }
 
+Function Start-GUITests {
+    Write-Host "`n> Running GUI Tests..." -ForegroundColor Cyan
+    Set-Location build/bin 
+    . .\DocSpeak.exe 
+}
+
 if ($args) {
     switch ($args) {
         "clean" { 
@@ -42,6 +48,10 @@ if ($args) {
         "--run-tests" { 
             Write-Host ">> Running the Tests" -ForegroundColor Cyan
             Start-Tests
+        }
+        "--run-gui-tests" { 
+            Write-Host ">> Running GUI Tests" -ForegroundColor Cyan
+            Start-GUITests
         }
         Default {
             Write-Host "!! Unknown argument: $args" -ForegroundColor Yellow

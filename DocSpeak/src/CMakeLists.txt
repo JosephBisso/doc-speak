@@ -1,16 +1,15 @@
-set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 file(GLOB SRCS *.cpp)
-add_library( doc_speak STATIC  ${SRCS}) 
+add_library( doc_speak-src STATIC  ${SRCS}) 
 
 target_include_directories(
-    doc_speak 
+    doc_speak-src 
     PUBLIC 
     ${LIB_PATH}
 )
 
 target_link_libraries(
-    doc_speak 
+    doc_speak-src 
     PUBLIC 
     PDFHummus::PDFWriter
     plog::plog
@@ -19,3 +18,5 @@ target_link_libraries(
     DeepSpeech
     fvad 
 )
+
+add_library(DocSpeak::Common ALIAS doc_speak-src)

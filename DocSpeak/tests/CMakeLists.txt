@@ -15,7 +15,7 @@ include_directories(${DOCSPEACK_SRC})
 
 link_libraries(
   GTest::gtest_main
-  doc_speak
+  DocSpeak::Common
 )
 
 set(MAIN_CPP ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
