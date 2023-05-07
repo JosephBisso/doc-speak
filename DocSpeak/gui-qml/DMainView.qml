@@ -2,10 +2,12 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
+import "Constants.js" as Constants
+
 Frame {
     id: frame
 
-    padding: 10
+    padding: Constants.FRAME_PADDING
     bottomPadding: 3*padding
     rightPadding: 3*padding
 
@@ -20,7 +22,7 @@ Frame {
 
     background: Rectangle {
         anchors.fill: parent
-        color: "black"
+        color: Constants.FOREGROUND_COLOR
         radius: frame.padding
     }
 
@@ -30,7 +32,7 @@ Frame {
         color: "transparent"
         border {
             width: 5
-            color: "cyan"
+            color: "transparent"
         }
     }
 }

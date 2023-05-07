@@ -1,14 +1,15 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtGraphicalEffects 1.15
+
+import "Constants.js" as Constants
 
 Frame {
     id: frame
 
-    property int img_size: 30
-
-    padding: 5
-    width: 70
+    padding: Constants.FRAME_PADDING
+    width: 90
 
     anchors {
         left: parent.left
@@ -37,6 +38,11 @@ Frame {
             delegate: SideElement  {
                 display: AbstractButton.TextUnderIcon
                 source : `qrc/../assets/${modelData}.png`
+                column_padding: Constants.FRAME_PADDING
+                img_width: Constants.IMAGE_SIZE_BIG
+                text_font: Constants.FONT_VERY_SMALL
+                text_color: Constants.TEXT_ACCENT_COLOR
+
                 text: modelData
 
                 onClicked: frame.actionForButton(modelData)
@@ -48,6 +54,12 @@ Frame {
 
         SideElement  {
             id: log_button
+
+            column_padding: Constants.FRAME_PADDING
+            img_width: Constants.IMAGE_SIZE_BIG
+            text_font: Constants.FONT_VERY_SMALL
+            text_color: Constants.TEXT_ACCENT_COLOR
+
             property bool loggedIn: false
             property string msg: loggedIn ? "Log Out" : "Log In"
             property string context: loggedIn ? "LogOut" : "LogIn"
@@ -91,26 +103,46 @@ Frame {
         id: control
         text: qsTr("CheckDelegate")
         property url source: "qrc/../assets/Help.png"
+        property int column_padding: 5
+        property int img_width: 30
+        property font text_font: control.font
+        property color text_color: "black"
 
-        contentItem: Column {
+        hoverEnabled: true
+
+        contentItem: ColumnLayout {
             id: column
             anchors.centerIn: control
-            padding: 5
-            Image {
-                anchors.horizontalCenter: column.horizontalCenter
-                width: frame.img_size; height: width
-                fillMode: Image.PreserveAspectFit
-                horizontalAlignment: Image.AlignHCenter
-                source: control.source
+            Item {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                Image {
+                    id: delegate_img
+                    anchors.centerIn: parent
+                    width: control.img_width; height: width
+                    fillMode: Image.PreserveAspectFit
+                    horizontalAlignment: Image.AlignHCenter
+                    verticalAlignment: Image.AlignVCenter
+                    source: control.source
+                }
+                ColorOverlay {
+                    anchors.fill: delegate_img
+                    source: delegate_img
+                    color: control.text_color
+                }
+
             }
             Text {
-                anchors.horizontalCenter: column.horizontalCenter
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                Layout.fillWidth: true
                 text: control.text
-                font: control.font
-                opacity: enabled ? 1.0 : 0.3
-                color: control.down || control.checked  ? "white" : "black"
+                font: control.text_font
+                opacity: 1
+                color: control.text_color
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.Wrap
             }
         }
 
@@ -129,7 +161,7 @@ Frame {
             radius: 10
             color: {
                 if (control.down) {return "skyblue";}
-                else if (control.highlighted) {return "lightblue";}
+                else if (control.hovered) {return "lightblue";}
                 else if (control.checked) {return "skyblue";}
                 else {return "transparent";}
             }

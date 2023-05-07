@@ -10,6 +10,8 @@
 # Generated Files
 *.g.*
 **/build/**
+**/build*/**
+**/*.user
 
 # Precompiled Headers
 *.gch

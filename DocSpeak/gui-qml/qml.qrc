@@ -3,18 +3,20 @@
         <file>main.qml</file>
         <file>DSideBar.qml</file>
         <file>DMainView.qml</file>
+        <file>Constants.js</file>
         <file>..\assets\Calendar.png</file>
         <file>..\assets\Dashboard.png</file>
+        <file>..\assets\close.png</file>
         <file>..\assets\Doctors.png</file>
         <file>..\assets\Help.png</file>
         <file>..\assets\LogIn.png</file>
         <file>..\assets\LogOut.png</file>
-        <file>..\assets\Patients.png</file>
-        <file>..\assets\Report.png</file>
-        <file>..\assets\Settings.png</file>
-        <file>..\assets\close.png</file>
         <file>..\assets\maximize.png</file>
         <file>..\assets\minimize.png</file>
         <file>..\assets\notification.png</file>
+        <file>..\assets\pharmacy.png</file>
+        <file>..\assets\Patients.png</file>
+        <file>..\assets\Report.png</file>
+        <file>..\assets\Settings.png</file>
     </qresource>
 </RCC>

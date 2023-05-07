@@ -32,12 +32,6 @@ target_link_libraries(
     Qt5::Quick
 )
 
-set_target_properties(DocSpeak PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-)
-
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_import_qml_plugins(DocSpeak)
     qt_finalize_executable(DocSpeak)
