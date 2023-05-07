@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
 import QtGraphicalEffects 1.15
 
-import "Constants.js" as Constants
+import "qrc:/Constants.js" as Constants
 
 ApplicationWindow {
     id: rootWindow
@@ -74,9 +74,9 @@ ApplicationWindow {
         title: qsTr("DocSpeak")
 
         text_font: Constants.FONT_SMALL
+        page_font: Constants.FONT_SMALL_BOLD
         text_color: Constants.TEXT_ACCENT_COLOR
         img_width: Constants.IMAGE_SIZE_SMALL
-
         anchors.margins: 2
     }
 
@@ -84,6 +84,8 @@ ApplicationWindow {
         id: sidebar
         anchors.top: title_bar.bottom
         anchors.margins: 2
+
+        onPageChanged: (index) => {main_view.setIndex(index)}
     }
 
     DMainView {
@@ -92,6 +94,8 @@ ApplicationWindow {
         anchors.left: sidebar.right
         anchors.top: title_bar.bottom
         anchors.margins: 2
+
+        onPageLoaded: (page_name) => {title_bar.setPageName(page_name)}
     }
 
     Component.onDestruction: {
@@ -114,9 +118,14 @@ ApplicationWindow {
         // property int column_padding: 5
         property int img_width: 30
         property font text_font
+        property font page_font: text_font
         property color text_color: "black"
 
         property point mPos: Qt.point(0,0)
+
+        function setPageName (page_name) {
+            pageTitle.text = page_name
+        }
 
         padding: 2
         height: 40
@@ -172,8 +181,17 @@ ApplicationWindow {
                 verticalAlignment: Text.AlignVCenter
 
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
-                // Layout.preferredWidth: 30
-                // Layout.preferredHeight: 30
+            }
+
+            Text {
+                id: pageTitle
+                text: "DocSpeak"
+                color: title_bar_frame.text_color
+                font: title_bar_frame.page_font
+                verticalAlignment: Text.AlignVCenter
+
+                width: 200
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             }
 
             Rectangle {

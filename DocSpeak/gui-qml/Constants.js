@@ -10,6 +10,7 @@ const GRAY_COLOR = "#4b4f4f"
 
 const IMAGE_SIZE_BIG = 30
 const IMAGE_SIZE_SMALL = 20
+const IMAGE_SIZE_VERY_SMALL = 15
 
 const RECT_RADIUS = 10
 const FRAME_PADDING = 5

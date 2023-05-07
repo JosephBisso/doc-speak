@@ -3,7 +3,7 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtGraphicalEffects 1.15
 
-import "Constants.js" as Constants
+import "qrc:/Constants.js" as Constants
 
 Frame {
     id: frame
@@ -11,6 +11,9 @@ Frame {
     padding: Constants.FRAME_PADDING
     width: 90
 
+    
+    signal pageChanged(int index)
+    
     anchors {
         left: parent.left
         bottom: parent.bottom
@@ -49,6 +52,8 @@ Frame {
                 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                
+                ButtonGroup.group: button_group
             }
         }
 
@@ -72,29 +77,43 @@ Frame {
             
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            ButtonGroup.group: button_group
         }
+    }
+
+    ButtonGroup {
+        id: button_group
+        exclusive: true
     }
 
     function actionForButton(button) {
         console.log(`${button} clicked`)
         switch(button) {
             case "Dashboard":
+                frame.pageChanged(0)
                 break;
             case "Doctors":
+                frame.pageChanged(1)
                 break;
             case "Patients":
+                frame.pageChanged(2)
                 break;
             case "Calendar":
+                frame.pageChanged(3)
                 break;
             case "Report":
+                frame.pageChanged(4)
                 break;
             case "Settings":
+                frame.pageChanged(5)
                 break;
             case "Help":
+                frame.pageChanged(6)
                 break;
             case "LogIn":
-                break;
             case "LogOut":
+                frame.pageChanged(7)
                 break;
         }
     }
