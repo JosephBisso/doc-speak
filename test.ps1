@@ -1,7 +1,7 @@
 Function Build-Tests {
     Write-Host "> Building..." -ForegroundColor Cyan
     cmake -G Ninja -S . -B build -DCI=ON
-    cmake --build build --target unit_tests gui_tests .\DocSpeak 
+    cmake --build build --target unit_tests DocSpeak 
 }
 
 Function Start-Tests {
