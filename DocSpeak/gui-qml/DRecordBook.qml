@@ -56,7 +56,7 @@ Frame {
             }
 
             Repeater {
-                model: ["Name", "Phone", "Email", "Sex", "Last Record"]
+                model: ["Patient Name", "Doctor Name", "Date"]
 
                 delegate: Label {
                     text: modelData
@@ -85,8 +85,8 @@ Frame {
             }
 
             model: ListModel {
-                ListElement{name: "name1"; phone: "phone1"; email: "email1"; sex: "sex1"; last_record: "last_record1"}
-                ListElement{name: "name2"; phone: "phone2"; email: "email2"; sex: "sex2"; last_record: "last_record2"}
+                ListElement{patient_name: "patient name1"; doctor_name: "doctor name1"; date: "date1"}
+                ListElement{patient_name: "patient name2"; doctor_name: "doctor name2"; date: "date2"}
             }
 
             delegate: Rectangle {
@@ -112,7 +112,7 @@ Frame {
                     Text {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
                         Layout.fillWidth: true
-                        text: name
+                        text: patient_name
                         font: Constants.FONT_MEDIUM
                         opacity: 1
                         color: Constants.TEXT_COLOR
@@ -123,7 +123,7 @@ Frame {
                     Text {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
                         Layout.fillWidth: true
-                        text: phone
+                        text: doctor_name
                         font: Constants.FONT_MEDIUM
                         opacity: 1
                         color: Constants.TEXT_COLOR
@@ -134,7 +134,7 @@ Frame {
                     Text {
                         Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
                         Layout.fillWidth: true
-                        text: email
+                        text: date
                         font: Constants.FONT_MEDIUM
                         opacity: 1
                         color: Constants.TEXT_COLOR
@@ -142,57 +142,6 @@ Frame {
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.Wrap
                     }
-                    Text {
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: sex
-                        font: Constants.FONT_MEDIUM
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
-                    Text {
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: last_record
-                        font: Constants.FONT_MEDIUM
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
-
-                    // Rectangle {
-                    //     id: email_button
-                    //     Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                    //     Layout.fillHeight: true
-                    //     Image {
-                    //         id: email_button_img
-                    //         anchors.centerIn: parent
-                    //         width: Constants.IMAGE_SIZE_BIG; height: width
-                    //         fillMode: Image.PreserveAspectFit
-                    //         horizontalAlignment: Image.AlignHCenter
-                    //         verticalAlignment: Image.AlignVCenter
-                    //         source: "qrc/../assets/email.png"
-                    //     }
-                    //     ColorOverlay {
-                    //         anchors.fill: email_button_img
-                    //         source: email_button_img
-                    //         color: Constants.TEXT_COLOR
-                    //     }
-                    //     MouseArea {
-                    //         anchors.fill: parent
-                    //         hoverEnabled: true
-                    //         cursorShape: Qt.PointingHandCursor 
-
-                    //         onClicked: {console.log("emailing", email)}
-
-                    //     }
-                    // }
-
                 }
             }
         }

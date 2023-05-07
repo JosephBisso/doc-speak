@@ -91,8 +91,9 @@ Frame {
             asynchronous: true
             onLoaded: {frame.pageLoaded("Record Book")}
             sourceComponent: Component {
-                
-                Rectangle {}
+                DRecordBook{
+                    id: record_book
+                }
             }
         }
         Loader {

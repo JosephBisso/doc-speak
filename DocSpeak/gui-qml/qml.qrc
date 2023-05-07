@@ -4,7 +4,9 @@
         <file>DSideBar.qml</file>
         <file>DMainView.qml</file>
         <file>DPersonBook.qml</file>
+        <file>DRecordBook.qml</file>
         <file>DSearchBar.qml</file>
+        <file>DCalendar.qml</file>
         <file>Constants.js</file>
         <file>..\assets\Calendar.png</file>
         <file>..\assets\Dashboard.png</file>
