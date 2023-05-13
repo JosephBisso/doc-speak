@@ -279,7 +279,7 @@ ApplicationWindow {
                                         rootWindow.showMinimized()
                                         break;
                                     case "maximize": 
-                                        console.log(rootWindow.visibility)
+                                        console.log(rootWindow.visibility, "was maximized ?", rootWindow.visibility == 4 || rootWindow.visibility == 5)
                                         if (rootWindow.visibility == 4 || rootWindow.visibility == 5) { // if Maximized
                                             rootWindow.visibility = 1  // Automatic visibility
                                         } else {

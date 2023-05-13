@@ -8,6 +8,8 @@ import "qrc:/Constants.js" as Constants
 Frame {
     id: frame
 
+    property bool hide_text: false
+
     padding: Constants.FRAME_PADDING
     width: 90
 
@@ -24,9 +26,32 @@ Frame {
         color: "transparent"
     }
 
+    Behavior on width {NumberAnimation{duration: 100; easing.type: Easing.InOutQuad}}
+
+    Timer {
+        id: text_hide_timer
+        interval: 3000; running: true; repeat: false; triggeredOnStart: false
+        onTriggered: {
+            console.log("fadding side bar")
+            frame.hide_text = true
+            frame.width = 60
+        }
+
+        function show_text() {
+            frame.width = 90
+            frame.hide_text = false
+            text_hide_timer.stop()
+        }
+
+        function start_hide_timer() {
+            text_hide_timer.restart()
+        }
+    }
+
     ColumnLayout {
         anchors.fill: parent
-        
+        spacing: 10
+
         Repeater {
             model: [
                 "Dashboard",
@@ -45,10 +70,19 @@ Frame {
                 img_width: Constants.IMAGE_SIZE_BIG
                 text_font: Constants.FONT_VERY_SMALL
                 text_color: Constants.TEXT_ACCENT_COLOR
+                text_visible: !frame.hide_text
 
+                checked: index == 0
                 text: modelData
 
                 onClicked: frame.actionForButton(modelData)
+                onHoveredChanged: {
+                    if (hovered) {
+                        text_hide_timer.show_text()
+                    } else {
+                        text_hide_timer.start_hide_timer()
+                    }
+                }
                 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -64,6 +98,7 @@ Frame {
             img_width: Constants.IMAGE_SIZE_BIG
             text_font: Constants.FONT_VERY_SMALL
             text_color: Constants.TEXT_ACCENT_COLOR
+            text_visible: !frame.hide_text
 
             property bool loggedIn: false
             property string msg: loggedIn ? "Log Out" : "Log In"
@@ -74,6 +109,13 @@ Frame {
             text: log_button.msg
 
             onClicked: frame.actionForButton(context)
+            onHoveredChanged: {
+                 if (hovered) {
+                    text_hide_timer.show_text()
+                } else {
+                    text_hide_timer.start_hide_timer()
+                }
+            }
             
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -126,6 +168,7 @@ Frame {
         property int img_width: 30
         property font text_font: control.font
         property color text_color: "black"
+        property bool text_visible: true
 
         hoverEnabled: true
 
@@ -162,6 +205,7 @@ Frame {
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.Wrap
+                visible: control.text_visible
             }
         }
 
