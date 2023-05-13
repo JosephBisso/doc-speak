@@ -80,7 +80,7 @@ Frame {
 
         clip: true
         ScrollBar.horizontal.policy: ScrollBar.AsNeeded
-        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
+        ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
         RowLayout {
             id: list_title

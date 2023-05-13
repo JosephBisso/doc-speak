@@ -30,7 +30,7 @@ Frame {
 
     Timer {
         id: text_hide_timer
-        interval: 3000; running: true; repeat: false; triggeredOnStart: false
+        interval: 2000; running: true; repeat: false; triggeredOnStart: false
         onTriggered: {
             console.log("fadding side bar")
             frame.hide_text = true

@@ -17,6 +17,12 @@ const FRAME_PADDING = 5
 
 const transparentBy = (color, grad) => { return Qt.rgba(color.r, color.g, color.b, grad) }
 
+const randomColor = () => {
+    let r = Math.random()
+    let g = Math.random()
+    let b = Math.random()
+    return Qt.rgba(r, g, b, 1)
+}
 const FONT_VERY_LARGE_BOLD = Qt.font(
     {
         bold: true,

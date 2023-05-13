@@ -80,8 +80,9 @@ Frame {
             asynchronous: true
             onLoaded: {frame.pageLoaded("Calendar")}
             sourceComponent: Component {
-                
-                Rectangle {}
+                DCalendar {
+                    id: calendar
+                }
             }
         }
         Loader {
