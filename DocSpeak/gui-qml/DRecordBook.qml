@@ -8,6 +8,12 @@ import "qrc:/Constants.js" as Constants
 Frame {
     id: frame
 
+    property ListModel all_records: ListModel{
+        ListElement{patient_name: "patient name1"; doctor_name: "doctor name1"; date: "date1"}
+        ListElement{patient_name: "patient name2"; doctor_name: "doctor name2"; date: "date2"}
+    }
+
+
     anchors.fill: parent
 
     background: Rectangle {
@@ -15,6 +21,29 @@ Frame {
         color: "transparent"
         border.color: "transparent"
     }
+
+    function searchElement(text) {
+        view_list_model.clear()
+        for (let i = 0; i < all_records.count; i++) {
+            if (all_records.get(i).patient_name.match(text) || 
+                all_records.get(i).doctor_name.match(text) ||
+                all_records.get(i).date.match(text) 
+            ) {
+                view_list_model.append(
+                    {
+                        "patient_name"      : all_records.get(i).patient_name,
+                        "doctor_name"     : all_records.get(i).doctor_name,
+                        "date"     : all_records.get(i).date,
+                    }
+                )
+            }
+        }
+
+        list_view.model = view_list_model
+    }
+
+    Component.onCompleted: {list_view.model = frame.all_records}
+
 
     DSearchBar {
         id: search_bar
@@ -26,7 +55,14 @@ Frame {
             margins: 10
         }
 
-        onFilter: (filterText) => {console.log("filtering for", filterText)}
+        onFilter: (filterText) => {
+            console.log("filtering for", filterText)
+            if (!filterText) {
+                list_view.model = frame.all_records
+                return
+            }
+            frame.searchElement(filterText)
+        }
     }
 
 
@@ -58,16 +94,19 @@ Frame {
             Repeater {
                 model: ["Patient Name", "Doctor Name", "Date"]
 
-                delegate: Label {
-                    text: modelData
-                    font: Constants.FONT_MEDIUM_BOLD
-                    opacity: 1
-                    color: Constants.TEXT_COLOR
-                    elide: Text.ElideRight
-                    verticalAlignment: Text.AlignVCenter
-                    wrapMode: Text.Wrap
+                delegate: Rectangle {
                     Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
                     Layout.fillWidth: true
+                    Label {
+                        anchors.centerIn: parent
+                        text: modelData
+                        font: Constants.FONT_MEDIUM_BOLD
+                        opacity: 1
+                        color: Constants.TEXT_COLOR
+                        elide: Text.ElideRight
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.Wrap
+                    }
                 }
             }
         }
@@ -84,10 +123,7 @@ Frame {
                 bottom: parent.bottom
             }
 
-            model: ListModel {
-                ListElement{patient_name: "patient name1"; doctor_name: "doctor name1"; date: "date1"}
-                ListElement{patient_name: "patient name2"; doctor_name: "doctor name2"; date: "date2"}
-            }
+            model: ListModel {id: view_list_model}
 
             delegate: Rectangle {
                 id: rect_delegate
@@ -102,45 +138,29 @@ Frame {
                     anchors.fill: parent
                     hoverEnabled: true
 
-                    onClicked: {console.log(name, "clicked")}
+                    onClicked: {console.log("Clicked:", patient_name, doctor_name, date)}
                 }
 
                 RowLayout {
                     anchors.fill: parent
-                    implicitWidth: list_view.width
 
-                    Text {
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: patient_name
-                        font: Constants.FONT_MEDIUM
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
-                    Text {
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: doctor_name
-                        font: Constants.FONT_MEDIUM
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
-                    Text {
-                        Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                        Layout.fillWidth: true
-                        text: date
-                        font: Constants.FONT_MEDIUM
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
+                    Repeater {
+                        model: [patient_name, doctor_name, date]
+
+                        delegate: Rectangle {
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                            Layout.fillWidth: true
+                            Text {
+                                anchors.centerIn: parent
+                                text: modelData
+                                font: Constants.FONT_MEDIUM
+                                opacity: 1
+                                color: Constants.TEXT_COLOR
+                                elide: Text.ElideRight
+                                verticalAlignment: Text.AlignVCenter
+                                wrapMode: Text.Wrap
+                            }
+                        }
                     }
                 }
             }
