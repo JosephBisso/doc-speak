@@ -2,24 +2,52 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 COMPONENTS Core Quick Qml gui quickcontrols2 LinguistTools REQUIRED HINTS $ENV{QT5_DIR})
+IF (NOT DEFINED ENV{QT6_DIR})
+    message(WARNING "!(1)! Please Set the environment variable QT6_DIR to the CMake directory of QT6")
+    message(WARNING "!(2)! Also think about adding the path to Qt6 dlls to PATH")
+ENDIF()
+
+find_package(Qt6 COMPONENTS Core Quick Qml gui quickcontrols2 LinguistTools REQUIRED HINTS $ENV{QT6_DIR})
 
 file(GLOB GUI_SRCS *.cpp)
 set(TS_FILES doc_speak-gui_en_US.ts)
 
-set(
-    PROJECT_SOURCES
+qt_add_executable(
+    DocSpeak
     ${GUI_SRCS}
-    qml.qrc
+)
+
+file(
+    GLOB QML_FILES 
+    RELATIVE ${DOCSPEACK_QML}
+    *.qml
+)
+file(
+    GLOB QML_JS_FILES 
+    RELATIVE ${DOCSPEACK_QML}
+    *.js
+)
+qt_add_resources(
+    DocSpeak
+    qmlfiles
+    FILES
+    ${QML_FILES}
+    ${QML_JS_FILES}
+)
+
+file(GLOB ASSETS RELATIVE ${DOCSPEACK_QML} ${DOCSPEACK_ASSETS}/*.*)
+qt_add_resources(
+    DocSpeak
+    assets
+    FILES
+    ${ASSETS}
+)
+
+qt_add_translation(
+    DocSpeak 
+    TS_FILES 
     ${TS_FILES}
 )
-
-add_executable(
-    DocSpeak
-    ${PROJECT_SOURCES}
-)
-
-qt5_add_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 target_compile_definitions(DocSpeak
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
@@ -28,11 +56,7 @@ target_link_libraries(
     DocSpeak
     PRIVATE 
     DocSpeak::Common
-    Qt5::Core 
-    Qt5::Quick
+    Qt6::Core 
+    Qt6::Quick
 )
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_import_qml_plugins(DocSpeak)
-    qt_finalize_executable(DocSpeak)
-endif()

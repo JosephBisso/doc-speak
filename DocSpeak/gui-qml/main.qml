@@ -4,7 +4,7 @@ import Qt.labs.settings 1.0
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQml.Models 2.15
-import QtGraphicalEffects 1.15
+//import QtGraphicalEffects 1.15
 
 import "qrc:/Constants.js" as Constants
 
@@ -214,11 +214,11 @@ ApplicationWindow {
                     verticalAlignment: Image.AlignVCenter
                 }
 
-                ColorOverlay {
-                    anchors.fill: notification
-                    source: notification
-                    color: title_bar_frame.text_color
-                }
+                // ColorOverlay {
+                //     anchors.fill: notification
+                //     source: notification
+                //     color: title_bar_frame.text_color
+                // }
 
                 MouseArea {
                     id: notification_ma
@@ -262,11 +262,11 @@ ApplicationWindow {
                             verticalAlignment: Image.AlignVCenter
                         }
 
-                        ColorOverlay {
-                            anchors.fill: img_delegate
-                            source: img_delegate
-                            color: title_bar_frame.text_color
-                        }
+                        // ColorOverlay {
+                        //     anchors.fill: img_delegate
+                        //     source: img_delegate
+                        //     color: title_bar_frame.text_color
+                        // }
 
                         MouseArea {
                             id: mouse_area

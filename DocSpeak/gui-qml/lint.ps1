@@ -1,7 +1,7 @@
 $qmlFiles = Get-ChildItem *.qml, *.js | Select-Object -ExpandProperty Name
 
-if ($True -and (Test-Path "C:\Qt\6.2.3\msvc2019_64\bin\qmllint.exe")) {
-    $qmllint = "C:\Qt\6.2.3\msvc2019_64\bin\qmllint.exe"
+if ((Test-Path "C:\Qt\6.7.2\msvc2019_64\bin\qmllint.exe")) {
+    $qmllint = "C:\Qt\6.7.2\msvc2019_64\bin\qmllint.exe"
 
     . $qmllint --resource qml.qrc --unqualified info --unused-imports info $qmlFiles
 

@@ -29,8 +29,9 @@ Function Start-Tests {
 
 Function Start-GUITests {
     Write-Host "`n> Running GUI Tests..." -ForegroundColor Cyan
-    Set-Location build/bin 
+    Push-Location build/bin 
     . .\DocSpeak.exe 
+    Pop-Location
 }
 
 if ($args) {
@@ -53,6 +54,13 @@ if ($args) {
             Write-Host ">> Running GUI Tests" -ForegroundColor Cyan
             Start-GUITests
         }
+        "-g" { 
+            Write-Host ">> Building & Running GUI Tests" -ForegroundColor Cyan
+            Build-Tests
+            if ($LASTEXITCODE -eq 0 -and '--build-only' -notin $args) {
+                Start-GUITests
+            }
+        }
         Default {
             Write-Host "!! Unknown argument: $args" -ForegroundColor Yellow
         }
@@ -63,7 +71,7 @@ if ($args) {
     
     $repo = "$PWD"
     if ($LASTEXITCODE -eq 0 -and '--build-only' -notin $args) {
-       Run-Tests($repo)
+        Start-Tests($repo)
     }
 }
 

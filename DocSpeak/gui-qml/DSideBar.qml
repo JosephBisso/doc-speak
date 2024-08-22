@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtGraphicalEffects 1.15
+// import QtGraphicalEffects 1.15
 
 import "qrc:/Constants.js" as Constants
 
@@ -188,11 +188,11 @@ Frame {
                     verticalAlignment: Image.AlignVCenter
                     source: control.source
                 }
-                ColorOverlay {
-                    anchors.fill: delegate_img
-                    source: delegate_img
-                    color: control.text_color
-                }
+                // ColorOverlay {
+                //     anchors.fill: delegate_img
+                //     source: delegate_img
+                //     color: control.text_color
+                // }
 
             }
             Text {

@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
-import QtGraphicalEffects 1.15
+// import QtGraphicalEffects 1.15
 
 import "qrc:/Constants.js" as Constants
 
@@ -47,12 +47,12 @@ Frame {
                 Layout.leftMargin: rootSearchBar.mRadius * 0.25
             }
 
-            ColorOverlay {
-                id: fileOverlay
-                source: searchImg
-                anchors.fill: searchImg
-                color: "black"
-            }
+            // ColorOverlay {
+            //     id: fileOverlay
+            //     source: searchImg
+            //     anchors.fill: searchImg
+            //     color: "black"
+            // }
         }
 
         TextField {
