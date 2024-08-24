@@ -18,6 +18,13 @@ MenuBar {
         Action { text: qsTr("&Paste") }
     }
     Menu {
+        title: qsTr("&Setting")
+        Action { text: qsTr("&View") }
+        Action { text: qsTr("&Input/Output") }
+        Action { text: qsTr("&Logins") }
+        Action { text: qsTr("&Database") }
+    }
+    Menu {
         title: qsTr("&Help")
         Action { text: qsTr("&About") }
     }

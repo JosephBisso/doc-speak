@@ -23,9 +23,7 @@ TabBar {
             "Doctors",
             "Patients",
             "Calendar",
-            "Report",
-            "Settings",
-            "Help"
+            "Report"
         ]
 
         delegate: SideElement  {
@@ -93,15 +91,9 @@ TabBar {
             case "Report":
                 frame.pageChanged(4)
                 break;
-            case "Settings":
-                frame.pageChanged(5)
-                break;
-            case "Help":
-                frame.pageChanged(6)
-                break;
             case "LogIn":
             case "LogOut":
-                frame.pageChanged(7)
+                frame.pageChanged(5)
                 break;
         }
     }

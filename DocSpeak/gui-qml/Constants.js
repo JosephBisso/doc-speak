@@ -35,6 +35,16 @@ const FONT_MEDIUM = Qt.font(
     }
 )
 
+const FONT_MEDIUM_SPECIAL = Qt.font(
+    {
+        bold: false,
+        pointSize: 14,
+        italic: true
+    }
+)
+
+
+
 const FONT_MEDIUM_BOLD = Qt.font(
     {
         bold: true,

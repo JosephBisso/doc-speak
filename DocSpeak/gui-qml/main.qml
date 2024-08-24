@@ -86,7 +86,7 @@ ApplicationWindow {
     footer: DFootBar {
         id: sidebar
 
-        onPageChanged: (index) => {main_view.setIndex(index)}
+        onPageChanged: (index) => {main_view.loadPage(index)}
     }
 
 
@@ -100,8 +100,6 @@ ApplicationWindow {
             rightMargin: -2*padding
             bottomMargin: -2*padding
         }
-
-        onPageLoaded: (page_name) => {header_bar.setPageName(page_name)}
     }
 
 

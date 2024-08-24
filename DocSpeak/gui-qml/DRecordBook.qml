@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.15
 
 import "Constants.js" as Constants
 
-Frame {
+Pane {
     id: frame
 
     property ListModel all_records: ListModel{
@@ -95,7 +95,7 @@ Frame {
                         text: modelData
                         font: Constants.FONT_MEDIUM_BOLD
                         opacity: 1
-                        color: palette.active.text
+                        color: palette.text
                         elide: Text.ElideRight
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.Wrap
@@ -123,7 +123,7 @@ Frame {
 
                 width: list_view.width
                 height: 60
-                color: mouse_area.containsMouse ? palette.active.highlight  : palette.active.window
+                color: mouse_area.containsMouse ? Qt.alpha(palette.highlight, 0.5): palette.active.window
                 radius: Constants.RECT_RADIUS
 
                 MouseArea {
@@ -148,7 +148,7 @@ Frame {
                                 text: modelData
                                 font: Constants.FONT_MEDIUM
                                 opacity: 1
-                                color: palette.active.text
+                                color: palette.text
                                 elide: Text.ElideRight
                                 verticalAlignment: Text.AlignVCenter
                                 wrapMode: Text.Wrap

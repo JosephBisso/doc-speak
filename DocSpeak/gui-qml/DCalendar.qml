@@ -1,21 +1,22 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
 //import QtQuick.Controls 1.4 as C1
 // import Qt.labs.calendar 1.0
 
 import "Constants.js" as Constants
 
-Frame {
+Pane {
     id: frame
 
     property var _locale: Qt.locale()
     property date currentDate: new Date()
     property ListModel all_dates: ListModel {
-        ListElement {start: "2023-05-09T10:56:06"; end: "2023-05-09T11:56:06"; msg: "Record1, Patient1, Doctor1"}
-        ListElement {start: "2023-05-12T12:56:06"; end: "2023-05-12T13:56:06"; msg: "Record2, Patient2, Doctor2"}
-        ListElement {start: "2023-05-12T14:56:06"; end: "2023-05-12T16:56:06"; msg: "Record3, Patient3, Doctor3"}
-        ListElement {start: "2023-05-12T16:56:06"; end: "2023-05-12T17:56:06"; msg: "Record3, Patient3, Doctor3"}
+        ListElement {start: "2024-08-09T10:56:06"; end: "2024-08-09T11:56:06"; msg: "Record1, Patient1, Doctor1"}
+        ListElement {start: "2024-08-12T12:56:06"; end: "2024-09-12T13:56:06"; msg: "Record2, Patient2, Doctor2"}
+        ListElement {start: "2024-09-12T14:56:06"; end: "2024-09-12T16:56:06"; msg: "Record3, Patient3, Doctor3"}
+        ListElement {start: "2024-09-12T16:56:06"; end: "2024-09-12T17:56:06"; msg: "Record3, Patient3, Doctor3"}
     }
 
     anchors.fill: parent
@@ -41,28 +42,30 @@ Frame {
         anchors.fill: parent
         spacing: 2 * Constants.FRAME_PADDING
 
-        Rectangle {
+        width: rootWindow.width - time_plan.width
+        height: time_plan.height
+
+        ColumnLayout {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            color: "transparent"
-            radius: Constants.RECT_RADIUS
-
             RowLayout {
                 id: calendar_title_row
-                width: parent.width
+                // width: parent.width
+                // implicitWidth: width
+                Layout.fillWidth: true
                 height: 40
-                anchors {
-                    top: parent.top
-                    horizontalCenter: parent.horizontalCenter
-                }
+                // anchors {
+                //     top: parent.top
+                //     horizontalCenter: parent.horizontalCenter
+                // }
 
-                Button {
+                ToolButton {
                     id: calendar_back_button
                     text: "<"
                     onClicked: {listview.decrementCurrentIndex()}
                     hoverEnabled: true
-
+                    font: Constants.FONT_MEDIUM_BOLD
                     Layout.alignment: Qt.AlignRight
 
                 }
@@ -77,15 +80,16 @@ Frame {
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                     wrapMode: Text.Wrap
+                    Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 }
 
-                Button {
+                ToolButton {
                     id: calendar_next_button
                     text: ">"
                     onClicked: {listview.incrementCurrentIndex()}
                     hoverEnabled: true
-
+                    font: Constants.FONT_MEDIUM_BOLD
                     Layout.alignment: Qt.AlignLeft
 
                 }
@@ -94,15 +98,16 @@ Frame {
             DayOfWeekRow {
                 id: days_row
                 
-                width: parent.width
+                // Layout.fillHeight: true
+                Layout.fillWidth: true
 
-                anchors {
-                    top: calendar_title_row.bottom
-                    left: listview.left
-                    right: listview.right
+                // anchors {
+                //     top: calendar_title_row.bottom
+                //     left: calendar_title_row.left
+                //     right: calendar_title_row.right
 
-                    topMargin: 2 * Constants.FRAME_PADDING
-                }
+                //     topMargin: 2 * Constants.FRAME_PADDING
+                // }
                 delegate: Text {
                     text: model.shortName
                     font: Constants.FONT_MEDIUM_BOLD
@@ -115,16 +120,19 @@ Frame {
             ListView {
                 id: listview
                 
-                width: parent.width
+                // width: parent.width
+                // implicitWidth: width
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: days_row.bottom
-                    bottom: parent.bottom
+                // anchors {
+                //     left: calendar_title_row.left
+                //     right: calendar_title_row.right
+                //     top: days_row.bottom
+                //     bottom: parent.bottom
 
-                    margins: Constants.FRAME_PADDING
-                }
+                //     margins: Constants.FRAME_PADDING
+                // }
                 
                 snapMode: ListView.SnapOneItem
                 orientation: ListView.Horizontal
@@ -155,47 +163,24 @@ Frame {
                     id: month_grid
                     width: listview.width
                     height: listview.height
+                    implicitWidth: width
 
                     month: model.month
                     year: model.year
 
-                    delegate: Rectangle {
-                        id: rect_delegate
-                        property color _color: palette.active.accent
-                        property date _date: new Date(model.year, model.month, model.day)
+                    delegate: Basic.Button {
+                        id: button_delegate
+
                         height: 20
                         width: 20
-                        radius: Constants.RECT_RADIUS
-                        color: {
-                            if (frame.currentDate.getMonth() === model.month &&
-                                frame.currentDate.getFullYear() === model.year &&
-                                frame.currentDate.getDate() === model.day)
-                            {
-                                console.log("Calendar day at", frame.currentDate.getMonth(), frame.currentDate.getFullYear(), frame.currentDate.getDate())
-                                time_plan.displayElementsFor(frame.currentDate)
-                                return Constants.transparentBy(_color, 0.4)
-                            }
-                            return mouse_area.containsMouse ? Constants.transparentBy(_color, 0.1) : "transparent"
-                        }
-                        border.width: 4
-                        border.color: {
-                            if (frame.check_if_day_in_list(model)) {
-                                return Constants.randomColor()
-                            }
-                            return  Constants.transparentBy(palette.active.text, 0.1)
-                        }
 
-                        MouseArea {
-                            id: mouse_area
-                            hoverEnabled: true
-                            anchors.fill: parent
-                            onClicked: {
-                                time_plan._color = rect_delegate.border.color
-                                time_plan.displayElementsFor(rect_delegate._date)
-                            }
-                        }
+                        hoverEnabled: true
+                        checkable: true
+                        ButtonGroup.group: calendar_button_group
 
-                        Text {
+                        indicator: null
+
+                        contentItem: Text {
                             anchors.centerIn: parent
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
@@ -204,10 +189,52 @@ Frame {
                             font: Constants.FONT_MEDIUM
                             color: palette.active.text
                         }
+
+                        background: Rectangle {
+                            id: rect_delegate
+                            property date _date: new Date(model.year, model.month, model.day)
+                            anchors.fill: button_delegate
+
+                            radius: Constants.RECT_RADIUS
+                            color: {
+                                if (frame.currentDate.getMonth() === model.month &&
+                                    frame.currentDate.getFullYear() === model.year &&
+                                    frame.currentDate.getDate() === model.day)
+                                {
+                                    if (calendar_button_group.checkState === Qt.Unchecked) {
+                                        console.log("Calendar day at", frame.currentDate.getMonth(), frame.currentDate.getFullYear(), frame.currentDate.getDate())
+                                        time_plan.displayElementsFor(frame.currentDate)
+                                    }
+                                    return Qt.alpha(palette.accent, 0.7)
+                                }
+
+                                if (button_delegate.checked) {return palette.highlight}
+
+                                return button_delegate.containsMouse ? Qt.alpha(palette.highlight, 0.4) : "transparent"
+                            }
+                            border.width: 4
+                            border.color: {
+                                if (frame.check_if_day_in_list(model)) {
+                                    return Constants.randomColor()
+                                }
+                                return  model.month === month_grid.month ? Qt.alpha(palette.text, 0.3) : Qt.alpha(palette.text, 0.1)
+                            }
+                        }
+
+                        onCheckedChanged: {
+                            if (!checked) {return}
+                            time_plan._color = rect_delegate.border.color
+                            time_plan.displayElementsFor(rect_delegate._date)
+                        }
                     }
                 }
 
                 ScrollIndicator.horizontal: ScrollIndicator { }
+
+                ButtonGroup {
+                    id: calendar_button_group
+                    exclusive: true
+                }
             }
         }
         
@@ -294,18 +321,20 @@ Frame {
                         columns: 2
                         rows: 2
                         rowSpacing: 0
-                        columnSpacing: 0
+                        columnSpacing: 10
 
                         Repeater {
                             model: [start, end]
                             delegate: Rectangle {
                                 Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                                Layout.fillWidth: true
+                                // Layout.fillWidth: true
                                 Layout.fillHeight: true
+                                Layout.minimumWidth: start_end_text.implicitWidth
                                 color: "transparent"
                                 border.color: "transparent"
 
                                 Text {
+                                    id: start_end_text
                                     anchors.centerIn: parent
                                     text: modelData
                                     font: Constants.FONT_SMALL_BOLD

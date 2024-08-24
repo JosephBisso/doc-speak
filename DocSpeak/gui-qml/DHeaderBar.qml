@@ -15,8 +15,8 @@ ToolBar {
         property font page_font: text_font
         property color text_color: palette.text
 
-        function setPageName (page_name : string): void {
-            pageTitle.text = page_name
+        function setUserName (user_name : string): void {
+            user_name.text = user_name
         }
 
         padding: 2
@@ -42,21 +42,21 @@ ToolBar {
                 id: windowTitle
                 text: header_bar_frame.title
                 color: palette.text
-                font: header_bar_frame.text_font
+                font: Constants.FONT_MEDIUM_SPECIAL
                 verticalAlignment: Text.AlignVCenter
 
                 Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
             }
 
             Text {
-                id: pageTitle
-                text: "DocSpeak"
+                id: user_name
+                text: "Herr Prof. Dr. Max MusterMann"
                 color: palette.text
                 font: header_bar_frame.page_font
+                horizontalAlignment: Qt.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-
-                width: 200
-                Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
             }
 
             ToolButton {
