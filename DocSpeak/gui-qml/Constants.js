@@ -1,13 +1,6 @@
 const TEXT_COLOR = "white"
 const TEXT_UNSELECTED_COLOR = "silver"
 const TEXT_ACCENT_COLOR = "white"
-const ACCENT_COLOR = "#4542f5"
-const ACCENT_2_COLOR = "skyblue"
-const FOREGROUND_COLOR = "lightgrey"
-const BACKGROUND_COLOR = "darkgrey"
-const RED_COLOR = "#e01418"
-const GRAY_COLOR = "#4b4f4f"
-
 const IMAGE_SIZE_BIG = 30
 const IMAGE_SIZE_SMALL = 20
 const IMAGE_SIZE_VERY_SMALL = 15

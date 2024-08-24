@@ -1,11 +1,12 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-// import QtGraphicalEffects 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Basic as Basic
+import QtQuick.Layouts
+import Qt5Compat.GraphicalEffects
 
-import "qrc:/Constants.js" as Constants
+import "Constants.js" as Constants
 
-Frame {
+Basic.Frame {
     id: rootSearchBar
     property real mRadius: Constants.RECT_RADIUS
 
@@ -14,13 +15,9 @@ Frame {
     opacity: 0.4
 
     background: Rectangle {
-        anchors.fill: parent
-        radius: rootSearchBar.mRadius
-        color: "white"
-        border {
-            color: "transparent"
-        }
+        radius: rootSearchBar.height
     }
+
     signal filter(string filterText)
 
     Timer {
@@ -47,12 +44,12 @@ Frame {
                 Layout.leftMargin: rootSearchBar.mRadius * 0.25
             }
 
-            // ColorOverlay {
-            //     id: fileOverlay
-            //     source: searchImg
-            //     anchors.fill: searchImg
-            //     color: "black"
-            // }
+            ColorOverlay {
+                id: fileOverlay
+                source: searchImg
+                anchors.fill: searchImg
+                color: searchText.color
+            }
         }
 
         TextField {

@@ -1,9 +1,8 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
-// import QtGraphicalEffects 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import "qrc:/Constants.js" as Constants
+import "Constants.js" as Constants
 
 Frame {
     id: frame
@@ -14,12 +13,6 @@ Frame {
     }
 
     anchors.fill: parent
-
-    background: Rectangle {
-        anchors.fill: parent
-        color: "transparent"
-        border.color: "transparent"
-    }
 
     function searchElement(text) {
         view_list_model.clear()
@@ -132,7 +125,7 @@ Frame {
 
                 width: list_view.width
                 height: 60
-                color: mouse_area.containsMouse ? Constants.ACCENT_2_COLOR  : Constants.BACKGROUND_COLOR
+                color: mouse_area.containsMouse ? palette.active.accent  : palette.active.window
                 radius: Constants.RECT_RADIUS
 
                 MouseArea {

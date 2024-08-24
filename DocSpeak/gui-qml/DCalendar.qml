@@ -1,10 +1,10 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 //import QtQuick.Controls 1.4 as C1
 // import Qt.labs.calendar 1.0
 
-import "qrc:/Constants.js" as Constants
+import "Constants.js" as Constants
 
 Frame {
     id: frame
@@ -19,12 +19,6 @@ Frame {
     }
 
     anchors.fill: parent
-
-    background: Rectangle {
-        anchors.fill: parent
-        color: "transparent"
-        border.color: "transparent"
-    }
 
     function check_if_day_in_list (target_date) {
         
@@ -70,21 +64,7 @@ Frame {
                     hoverEnabled: true
 
                     Layout.alignment: Qt.AlignRight
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: calendar_back_button.hovered ? Constants.ACCENT_COLOR : "transparent"
-                        radius: Constants.RECT_RADIUS
-                    }
 
-                    contentItem: Text {
-                        text: calendar_back_button.text
-                        font: Constants.FONT_MEDIUM_BOLD
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
                 }
 
                 Label {
@@ -92,7 +72,7 @@ Frame {
                     text: `${frame._locale.monthName(listview.model.monthAt(listview.currentIndex))} ${listview.model.yearAt(listview.currentIndex)}`
                     font: Constants.FONT_MEDIUM_BOLD
                     opacity: 1
-                    color: Constants.TEXT_COLOR
+                    color: palette.active.text
                     elide: Text.ElideRight
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -108,44 +88,29 @@ Frame {
 
                     Layout.alignment: Qt.AlignLeft
 
-                    background: Rectangle {
-                        anchors.fill: parent
-                        color: calendar_next_button.hovered ? Constants.ACCENT_COLOR : "transparent"
-                        radius: Constants.RECT_RADIUS
-                    }
-
-                    contentItem: Text {
-                        text: calendar_next_button.text
-                        font: Constants.FONT_MEDIUM_BOLD
-                        opacity: 1
-                        color: Constants.TEXT_COLOR
-                        elide: Text.ElideRight
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.Wrap
-                    }
                 }
             }
 
-            // DayOfWeekRow {
-            //     id: days_row
+            DayOfWeekRow {
+                id: days_row
                 
-            //     width: parent.width
+                width: parent.width
 
-            //     anchors {
-            //         top: calendar_title_row.bottom
-            //         left: listview.left
-            //         right: listview.right
+                anchors {
+                    top: calendar_title_row.bottom
+                    left: listview.left
+                    right: listview.right
 
-            //         topMargin: 2 * Constants.FRAME_PADDING
-            //     }
-            //     delegate: Text {
-            //         text: model.shortName
-            //         font: Constants.FONT_MEDIUM_BOLD
-            //         horizontalAlignment: Text.AlignHCenter
-            //         verticalAlignment: Text.AlignVCenter
-            //         color: Constants.TEXT_COLOR
-            //     }
-            // }
+                    topMargin: 2 * Constants.FRAME_PADDING
+                }
+                delegate: Text {
+                    text: model.shortName
+                    font: Constants.FONT_MEDIUM_BOLD
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    color: palette.active.text
+                }
+            }
 
             ListView {
                 id: listview
@@ -177,70 +142,70 @@ Frame {
                     }
                 }
 
-                // model: CalendarModel {
-                //     from: new Date(2022, 0, 1)
-                //     to: {
-                //         let today = new Date()
-                //         console.log("Actual Year", today.getFullYear())
-                //         return new Date(today.getFullYear() + 5, 0, 1)
-                //     }
-                // }
+                model: CalendarModel {
+                    from: new Date(2022, 0, 1)
+                    to: {
+                        let today = new Date()
+                        console.log("Actual Year", today.getFullYear())
+                        return new Date(today.getFullYear() + 5, 0, 1)
+                    }
+                }
 
-                // delegate: MonthGrid {
-                //     id: month_grid
-                //     width: listview.width
-                //     height: listview.height
+                delegate: MonthGrid {
+                    id: month_grid
+                    width: listview.width
+                    height: listview.height
 
-                //     month: model.month
-                //     year: model.year
+                    month: model.month
+                    year: model.year
 
-                //     delegate: Rectangle {
-                //         id: rect_delegate
-                //         property color _color: Constants.ACCENT_COLOR
-                //         property date _date: new Date(model.year, model.month, model.day)
-                //         height: 20
-                //         width: 20
-                //         radius: Constants.RECT_RADIUS
-                //         color: {
-                //             if (frame.currentDate.getMonth() === model.month &&
-                //                 frame.currentDate.getFullYear() === model.year &&
-                //                 frame.currentDate.getDate() === model.day)
-                //             {
-                //                 console.log("Calendar day at", frame.currentDate.getMonth(), frame.currentDate.getFullYear(), frame.currentDate.getDate())
-                //                 time_plan.displayElementsFor(frame.currentDate)
-                //                 return Constants.transparentBy(_color, 0.4)
-                //             }
-                //             return mouse_area.containsMouse ? Constants.transparentBy(_color, 0.1) : "transparent"
-                //         }
-                //         border.width: 4
-                //         border.color: {
-                //             if (frame.check_if_day_in_list(model)) {
-                //                 return Constants.randomColor()
-                //             }
-                //             return  Constants.transparentBy(Constants.TEXT_COLOR, 0.1)
-                //         }
+                    delegate: Rectangle {
+                        id: rect_delegate
+                        property color _color: palette.active.accent
+                        property date _date: new Date(model.year, model.month, model.day)
+                        height: 20
+                        width: 20
+                        radius: Constants.RECT_RADIUS
+                        color: {
+                            if (frame.currentDate.getMonth() === model.month &&
+                                frame.currentDate.getFullYear() === model.year &&
+                                frame.currentDate.getDate() === model.day)
+                            {
+                                console.log("Calendar day at", frame.currentDate.getMonth(), frame.currentDate.getFullYear(), frame.currentDate.getDate())
+                                time_plan.displayElementsFor(frame.currentDate)
+                                return Constants.transparentBy(_color, 0.4)
+                            }
+                            return mouse_area.containsMouse ? Constants.transparentBy(_color, 0.1) : "transparent"
+                        }
+                        border.width: 4
+                        border.color: {
+                            if (frame.check_if_day_in_list(model)) {
+                                return Constants.randomColor()
+                            }
+                            return  Constants.transparentBy(palette.active.text, 0.1)
+                        }
 
-                //         MouseArea {
-                //             id: mouse_area
-                //             hoverEnabled: true
-                //             anchors.fill: parent
-                //             onClicked: {
-                //                 time_plan._color = rect_delegate.border.color
-                //                 time_plan.displayElementsFor(rect_delegate._date)
-                //             }
-                //         }
+                        MouseArea {
+                            id: mouse_area
+                            hoverEnabled: true
+                            anchors.fill: parent
+                            onClicked: {
+                                time_plan._color = rect_delegate.border.color
+                                time_plan.displayElementsFor(rect_delegate._date)
+                            }
+                        }
 
-                //         Text {
-                //             anchors.centerIn: parent
-                //             horizontalAlignment: Text.AlignHCenter
-                //             verticalAlignment: Text.AlignVCenter
-                //             opacity: model.month === month_grid.month ? 1 : 0.3
-                //             text: model.day
-                //             font: Constants.FONT_MEDIUM
-                //             color: Constants.TEXT_COLOR
-                //         }
-                //     }
-                // }
+                        Text {
+                            anchors.centerIn: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            opacity: model.month === month_grid.month ? 1 : 0.3
+                            text: model.day
+                            font: Constants.FONT_MEDIUM
+                            color: palette.active.text
+                        }
+                    }
+                }
 
                 ScrollIndicator.horizontal: ScrollIndicator { }
             }
@@ -249,7 +214,7 @@ Frame {
         Rectangle {
             id: time_plan
 
-            property color _color: Constants.ACCENT_COLOR
+            property color _color: palette.active.accent
 
             width: 350
             Layout.fillHeight: true
@@ -290,7 +255,7 @@ Frame {
                 text: `Events on ${title.day}`
                 font: Constants.FONT_MEDIUM_BOLD
                 opacity: 1
-                color: Constants.TEXT_COLOR
+                color: palette.active.text
                 elide: Text.ElideRight
                 verticalAlignment: Text.AlignVCenter
                 wrapMode: Text.Wrap
@@ -345,7 +310,7 @@ Frame {
                                     text: modelData
                                     font: Constants.FONT_SMALL_BOLD
                                     opacity: 1
-                                    color: Constants.TEXT_COLOR
+                                    color: palette.active.text
                                     elide: Text.ElideRight
                                     verticalAlignment: Text.AlignVCenter
                                     wrapMode: Text.Wrap
@@ -373,7 +338,7 @@ Frame {
                                 text: msg
                                 font: Constants.FONT_SMALL
                                 opacity: 1
-                                color: Constants.TEXT_COLOR
+                                color: palette.active.text
                                 elide: Text.ElideRight
                                 verticalAlignment: Text.AlignVCenter
                                 horizontalAlignment: Text.AlignHCenter
